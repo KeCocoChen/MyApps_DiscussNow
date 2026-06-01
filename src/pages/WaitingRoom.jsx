@@ -1,9 +1,6 @@
 import { useMemo, useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
-import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
 import WaitingRoomScene from "../components/WaitingRoomScene";
 import WaitingRoomQuotes from "../components/WaitingRoomQuotes";
 
@@ -13,7 +10,6 @@ function getSessionIndex() {
 }
 
 export default function WaitingRoom() {
-  const navigate = useNavigate();
   const [extras, setExtras] = useState([]);
   const [timeLeft, setTimeLeft] = useState(() => {
     const interval = 30 * 60 * 1000;
@@ -72,22 +68,19 @@ export default function WaitingRoom() {
 
       <WaitingRoomQuotes />
 
-      <div className="flex justify-end">
-        <Button
-          onClick={() => navigate(`/room?session=${sessionIndex}`)}
-          disabled={!sessionReady}
-          className="gap-2 rounded-none px-6 h-10 text-sm font-semibold"
-        >
-          {sessionReady ? (
-            <>
-              Ready to talk
-              <ArrowRight className="w-4 h-4" />
-            </>
-          ) : (
-            `Discussion starts in ${minsLeft} min`
-          )}
-        </Button>
-      </div>
+      {!sessionReady && (
+        <div className="text-center py-2">
+          <p className="text-sm text-muted-foreground">
+            Discussion starts in <span className="font-semibold text-foreground">{minsLeft} min</span>
+          </p>
+        </div>
+      )}
+
+      {sessionReady && (
+        <div className="text-center py-2 border-t border-foreground/10">
+          <p className="text-sm font-semibold text-foreground">The discussion is live — listen in.</p>
+        </div>
+      )}
     </div>
   );
 }
