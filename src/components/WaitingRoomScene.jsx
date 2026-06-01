@@ -24,15 +24,6 @@ const GOAL_TAGS = {
   no_goal: "Just Vibing",
 };
 
-// Positions that look like sitting on couch/floor (% based)
-const SEATS = [
-  { bottom: "9%",  left: "5%"  },
-  { bottom: "6%",  left: "28%" },
-  { bottom: "9%",  left: "52%" },
-  { bottom: "7%",  right: "5%" },
-];
-
-const LIVING_ROOM_BG = "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=1000&fit=crop&crop=center";
 const MUSIC_SRC = "https://cdn.pixabay.com/audio/2022/10/16/audio_12a6d9a175.mp3";
 
 export default function WaitingRoomScene({ participants = [], piece, extras = [], onExplore, isExploring }) {
@@ -110,57 +101,6 @@ export default function WaitingRoomScene({ participants = [], piece, extras = []
         </div>
       )}
 
-      {/* Living room scene */}
-      <div className="relative w-full rounded-2xl overflow-hidden shadow-sm" style={{ aspectRatio: "16/9" }}>
-        {/* Background */}
-        <img
-          src={LIVING_ROOM_BG}
-          alt="Cozy living room"
-          className="absolute inset-0 w-full h-full object-cover"
-        />
-        {/* Warm amber vignette */}
-        <div className="absolute inset-0 bg-gradient-to-t from-amber-950/30 via-transparent to-transparent" />
-
-        {/* Participants sitting in the room */}
-        {allAvatars.map((p, i) => {
-          const animal = ANIMAL_IMAGES[i % ANIMAL_IMAGES.length];
-          const imgSrc = p.avatar_url || animal.url;
-          const displayName = p.is_ai ? animal.name : (p.display_name || "Guest").split(" ")[0];
-          const tag = GOAL_TAGS[p.goal] || (p.is_ai ? "AI" : "Thinker");
-          const pos = SEATS[i] || SEATS[0];
-
-          return (
-            <div
-              key={p.id || p.display_name || i}
-              className="absolute flex flex-col items-center"
-              style={pos}
-            >
-              {/* Name + tag floating above */}
-              <p
-                className="text-[10px] font-bold text-white leading-none mb-0.5"
-                style={{ textShadow: "0 1px 6px rgba(0,0,0,1), 0 0 12px rgba(0,0,0,0.8)" }}
-              >
-                {displayName}
-              </p>
-              <span className="text-[8px] px-1.5 py-0.5 rounded-full bg-black/50 text-white/95 backdrop-blur-sm leading-none mb-1.5">
-                {tag}
-              </span>
-              {/* Round animal avatar — mix-blend-mode multiply removes white bg */}
-              <div
-                className="w-14 h-14 rounded-full overflow-hidden shadow-xl border-2 border-white/60"
-                style={{ mixBlendMode: "normal" }}
-              >
-                <img
-                  src={imgSrc}
-                  alt={displayName}
-                  className="w-full h-full object-cover scale-110"
-                  onError={(e) => { e.target.src = animal.url; }}
-                />
-              </div>
-            </div>
-          );
-        })}
-      </div>
     </div>
   );
 }

@@ -4,19 +4,7 @@ import { base44 } from "@/api/base44Client";
 import WaitingRoomScene from "../components/WaitingRoomScene";
 import WaitingRoomQuotes from "../components/WaitingRoomQuotes";
 
-// Time-of-day cozy backgrounds
-const BACKGROUNDS = {
-  night:   "https://media.base44.com/images/public/6a1d1f0b92a437a5210e58cc/6f6308843_generated_image.png",
-  morning: "https://media.base44.com/images/public/6a1d1f0b92a437a5210e58cc/ef3fecbf6_generated_image.png",
-  evening: "https://media.base44.com/images/public/6a1d1f0b92a437a5210e58cc/40d52c878_generated_image.png",
-};
-
-function getBg() {
-  const h = new Date().getHours();
-  if (h >= 5 && h < 12) return BACKGROUNDS.morning;
-  if (h >= 12 && h < 19) return BACKGROUNDS.evening;
-  return BACKGROUNDS.night;
-}
+const BG_URL = "https://media.base44.com/images/public/6a1d1f0b92a437a5210e58cc/2bc8c55be_IMG_2444.png";
 
 const SESSION_INTERVAL = 30 * 60 * 1000;
 function getSessionIndex() {
@@ -70,14 +58,14 @@ export default function WaitingRoom() {
     setIsExploring(false);
   };
 
-  const bgUrl = useMemo(() => getBg(), []);
+
 
   return (
     <div className="relative min-h-screen w-full overflow-hidden">
       {/* Immersive background */}
       <div
         className="fixed inset-0 w-full h-full bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: `url(${bgUrl})` }}
+        style={{ backgroundImage: `url(${BG_URL})` }}
       />
       {/* Dark gradient overlay for readability */}
       <div className="fixed inset-0 bg-gradient-to-b from-black/20 via-black/10 to-black/60" />
