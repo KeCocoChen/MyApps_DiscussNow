@@ -26,9 +26,9 @@ const GOAL_TAGS = {
   no_goal: "Just Vibing",
 };
 
-// "Clair de Lune - Claude Debussy - Moonlight" — Pixabay Free License (free for commercial use, no attribution required)
+// "Clair de Lune - Debussy" — Pixabay Free License (free for commercial use)
 // https://pixabay.com/music/classical-piano-clair-de-lune-claude-debussy-moonlight-163848/
-const MUSIC_SRC = "https://cdn.pixabay.com/download/audio/2023/06/05/audio_163848.mp3";
+const MUSIC_SRC = "https://cdn.pixabay.com/download/audio/2022/10/25/audio_03c5f3837e.mp3";
 
 export default function WaitingRoomScene({ participants = [], piece, extras = [], onExplore, isExploring }) {
   const [playing, setPlaying] = useState(true);
