@@ -4,6 +4,20 @@ import { base44 } from "@/api/base44Client";
 import WaitingRoomScene from "../components/WaitingRoomScene";
 import WaitingRoomQuotes from "../components/WaitingRoomQuotes";
 
+// Time-of-day cozy backgrounds
+const BACKGROUNDS = {
+  night:   "https://media.base44.com/images/public/6a1d1f0b92a437a5210e58cc/6f6308843_generated_image.png",
+  morning: "https://media.base44.com/images/public/6a1d1f0b92a437a5210e58cc/ef3fecbf6_generated_image.png",
+  evening: "https://media.base44.com/images/public/6a1d1f0b92a437a5210e58cc/40d52c878_generated_image.png",
+};
+
+function getBg() {
+  const h = new Date().getHours();
+  if (h >= 5 && h < 12) return BACKGROUNDS.morning;
+  if (h >= 12 && h < 19) return BACKGROUNDS.evening;
+  return BACKGROUNDS.night;
+}
+
 const SESSION_INTERVAL = 30 * 60 * 1000;
 function getSessionIndex() {
   return Math.floor(Date.now() / SESSION_INTERVAL);
@@ -56,31 +70,44 @@ export default function WaitingRoom() {
     setIsExploring(false);
   };
 
+  const bgUrl = useMemo(() => getBg(), []);
+
   return (
-    <div className="max-w-2xl mx-auto px-4 pt-8 pb-16 space-y-6">
-      <WaitingRoomScene
-        participants={participants}
-        piece={currentPiece}
-        extras={extras}
-        onExplore={currentPiece && extras.length < 5 ? handleExplore : null}
-        isExploring={isExploring}
+    <div className="relative min-h-screen w-full overflow-hidden">
+      {/* Immersive background */}
+      <div
+        className="fixed inset-0 w-full h-full bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: `url(${bgUrl})` }}
       />
+      {/* Dark gradient overlay for readability */}
+      <div className="fixed inset-0 bg-gradient-to-b from-black/20 via-black/10 to-black/60" />
 
-      <WaitingRoomQuotes />
+      {/* Content */}
+      <div className="relative z-10 max-w-lg mx-auto px-4 pt-10 pb-20 space-y-5">
+        <WaitingRoomScene
+          participants={participants}
+          piece={currentPiece}
+          extras={extras}
+          onExplore={currentPiece && extras.length < 5 ? handleExplore : null}
+          isExploring={isExploring}
+        />
 
-      {!sessionReady && (
-        <div className="text-center py-2">
-          <p className="text-sm text-muted-foreground">
-            Discussion starts in <span className="font-semibold text-foreground">{minsLeft} min</span>
-          </p>
-        </div>
-      )}
+        <WaitingRoomQuotes />
 
-      {sessionReady && (
-        <div className="text-center py-2 border-t border-foreground/10">
-          <p className="text-sm font-semibold text-foreground">The discussion is live — listen in.</p>
-        </div>
-      )}
+        {!sessionReady && (
+          <div className="text-center py-2">
+            <p className="text-sm text-white/80">
+              Discussion starts in <span className="font-semibold text-white">{minsLeft} min</span>
+            </p>
+          </div>
+        )}
+
+        {sessionReady && (
+          <div className="text-center py-2 border-t border-white/20">
+            <p className="text-sm font-semibold text-white">The discussion is live — listen in.</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
