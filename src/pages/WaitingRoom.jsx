@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
@@ -15,6 +15,23 @@ function getSessionIndex() {
 export default function WaitingRoom() {
   const navigate = useNavigate();
   const [extras, setExtras] = useState([]);
+  const [timeLeft, setTimeLeft] = useState(() => {
+    const interval = 30 * 60 * 1000;
+    const now = Date.now();
+    return Math.max(0, Math.ceil(now / interval) * interval - now);
+  });
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      const interval = 30 * 60 * 1000;
+      const now = Date.now();
+      setTimeLeft(Math.max(0, Math.ceil(now / interval) * interval - now));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const sessionReady = timeLeft === 0;
+  const minsLeft = Math.ceil(timeLeft / 60000);
   const [isExploring, setIsExploring] = useState(false);
   const sessionIndex = useMemo(() => getSessionIndex(), []);
 
@@ -58,10 +75,17 @@ export default function WaitingRoom() {
       <div className="flex justify-end">
         <Button
           onClick={() => navigate(`/room?session=${sessionIndex}`)}
+          disabled={!sessionReady}
           className="gap-2 rounded-none px-6 h-10 text-sm font-semibold"
         >
-          Enter Discussion
-          <ArrowRight className="w-4 h-4" />
+          {sessionReady ? (
+            <>
+              Ready to talk
+              <ArrowRight className="w-4 h-4" />
+            </>
+          ) : (
+            `Discussion starts in ${minsLeft} min`
+          )}
         </Button>
       </div>
     </div>
