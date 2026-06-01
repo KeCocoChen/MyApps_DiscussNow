@@ -7,7 +7,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { MapPin, LogOut, Pencil } from "lucide-react";
+import { MapPin, LogOut, Pencil, Award } from "lucide-react";
+import ProfileTags from "../components/ProfileTags";
 import AvatarPicker from "../components/AvatarPicker";
 import { toast } from "sonner";
 
@@ -29,6 +30,24 @@ export default function Profile() {
     enabled: !!user?.email,
   });
 
+  const { data: feedbackAsLiked = [] } = useQuery({
+    queryKey: ["liked-feedback", user?.email],
+    queryFn: async () => {
+      const all = await base44.entities.DiscussionFeedback.list();
+      const name = profiles[0]?.display_name || user?.full_name || "";
+      return all.filter((f) => f.liked_participant === name);
+    },
+    enabled: !!user?.email && profiles.length > 0,
+  });
+
+  const computedBadge = feedbackAsLiked.length >= 10
+    ? "Community Favorite"
+    : feedbackAsLiked.length >= 5
+    ? "Thought Leader"
+    : feedbackAsLiked.length >= 3
+    ? "Great Presence"
+    : null;
+
   const profile = profiles[0] || null;
   const [form, setForm] = useState({});
 
@@ -42,6 +61,8 @@ export default function Profile() {
         open_to_meetup: profile.open_to_meetup || false,
         avatar_url: profile.avatar_url || "",
         custom_avatar_urls: profile.custom_avatar_urls || "[]",
+        profile_tags: profile.profile_tags || "[]",
+        intro: profile.intro || "",
       });
     } else if (user) {
       setForm({
@@ -52,6 +73,8 @@ export default function Profile() {
         open_to_meetup: false,
         avatar_url: "",
         custom_avatar_urls: "[]",
+        profile_tags: "[]",
+        intro: "",
       });
     }
   }, [profile, user]);
@@ -119,7 +142,15 @@ export default function Profile() {
                 <Pencil className="w-3 h-3" />
               </button>
             </div>
-            <CardTitle className="text-base">About You</CardTitle>
+            <div>
+              <CardTitle className="text-base">About You</CardTitle>
+              {computedBadge && (
+                <div className="flex items-center gap-1 mt-1 text-xs text-primary font-medium">
+                  <Award className="w-3.5 h-3.5" />
+                  {computedBadge}
+                </div>
+              )}
+            </div>
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -159,6 +190,40 @@ export default function Profile() {
               />
             </div>
           </div>
+          {/* Tags */}
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <Label>Your vibe</Label>
+              <span className="text-xs text-muted-foreground">
+                {profile?.is_premium ? "pick up to 3" : "pick 1"}
+              </span>
+            </div>
+            <ProfileTags
+              selected={JSON.parse(form.profile_tags || "[]")}
+              onChange={(tags) => update("profile_tags", JSON.stringify(tags))}
+              maxTags={profile?.is_premium ? 3 : 1}
+            />
+          </div>
+
+          {/* One-line intro (premium only) */}
+          {profile?.is_premium ? (
+            <div className="space-y-2">
+              <Label>One-line intro</Label>
+              <Input
+                value={form.intro || ""}
+                onChange={(e) => update("intro", e.target.value)}
+                placeholder="e.g. I argue for fun and coffee for fuel"
+                maxLength={80}
+              />
+              <p className="text-xs text-muted-foreground text-right">{(form.intro || "").length}/80</p>
+            </div>
+          ) : (
+            <div className="flex items-center gap-3 rounded-xl bg-accent/50 border border-accent p-3">
+              <Award className="w-4 h-4 text-primary flex-shrink-0" />
+              <p className="text-xs text-muted-foreground">Upgrade to premium to write a custom one-line intro.</p>
+            </div>
+          )}
+
           <div className="flex items-center justify-between py-2">
             <div>
               <Label>Open to meeting up IRL</Label>

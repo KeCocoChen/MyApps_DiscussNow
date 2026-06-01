@@ -20,6 +20,15 @@
     "interests": {
       "type": "string"
     },
+    "profile_tags": {
+      "type": "string"
+    },
+    "intro": {
+      "type": "string"
+    },
+    "badge": {
+      "type": "string"
+    },
     "talk_score": {
       "type": "number"
     },

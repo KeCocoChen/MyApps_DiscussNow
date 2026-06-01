@@ -20,7 +20,9 @@ export default function DiscussionRoom() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const [showSurvey, setShowSurvey] = useState(false);
+  const [supportMode, setSupportMode] = useState(false);
   const boostedSessionRef = useRef(null);
+  const supportAddedRef = useRef(false);
 
   useEffect(() => {
     base44.auth.me().then(setUser);
@@ -91,6 +93,35 @@ export default function DiscussionRoom() {
     }
   }, [sessionId, participantsFetched, participants, queryClient]);
 
+  // Check if current user is frequently disliked → enable mental health support mode
+  useEffect(() => {
+    if (!user || !participantsFetched || supportAddedRef.current) return;
+    supportAddedRef.current = true;
+    const displayName = participants.find((p) => p.user_email === user.email)?.display_name || user.full_name || "";
+    if (!displayName) return;
+    base44.entities.DiscussionFeedback.list().then((all) => {
+      const dislikeCount = all.filter((f) => f.disliked_participant === displayName).length;
+      if (dislikeCount >= 3) {
+        setSupportMode(true);
+        // Add a supportive AI companion if not already present
+        const hasHarmony = participants.some((p) => p.display_name === "Harmony (AI)");
+        if (!hasHarmony) {
+          base44.entities.SessionParticipant.create({
+            session_id: sessionId,
+            user_email: "harmony@ai.discussnow",
+            display_name: "Harmony (AI)",
+            attitude: "positive",
+            will_initiate: "likely",
+            mood: "chill",
+            goal: "make_friends",
+            is_ai: true,
+            talk_score: 5,
+          }).then(() => queryClient.invalidateQueries({ queryKey: ["participants", sessionId] }));
+        }
+      }
+    });
+  }, [user, participantsFetched, participants, sessionId, queryClient]);
+
   const sendMessage = useMutation({
     mutationFn: async (content) => {
       await base44.entities.ChatMessage.create({
@@ -104,17 +135,12 @@ export default function DiscussionRoom() {
       // AI responds when room is quiet (few real participants)
       const realCount = participants.filter((p) => !p.is_ai).length;
       if (realCount < 5 && messages.length % 3 === 0) {
-        const aiName = AI_NAMES[messages.length % AI_NAMES.length];
-        const aiResponse = await base44.integrations.Core.InvokeLLM({
-          prompt: `You are "${aiName}", a thoughtful participant in a group discussion about: "${currentPiece?.title || "an interesting topic"}". Context: ${currentPiece?.description || ""}. Someone just said: "${content}". Give a brief, engaging response (1-2 sentences max). Be natural, have your own perspective, and keep the conversation flowing. Don't be generic.`,
-        });
-        await base44.entities.ChatMessage.create({
-          session_id: sessionId,
-          sender_email: `${aiName.toLowerCase()}@ai.discussnow`,
-          sender_name: `${aiName} (AI)`,
-          content: aiResponse,
-          is_ai: true,
-        });
+        const isHarmonyTurn = supportMode && messages.length % 6 === 0;
+        const aiName = isHarmonyTurn ? "Harmony" : AI_NAMES[messages.length % AI_NAMES.length];
+        const prompt = isHarmonyTurn
+          ? `You are "Harmony", a warm and emotionally intelligent AI in a group discussion about "${currentPiece?.title || "an interesting topic"}". Someone just said: "${content}". Respond with genuine empathy and curiosity, helping them feel heard and valued. Keep it to 1-2 sentences — natural and supportive, never clinical or preachy.`
+          : `You are "${aiName}", a thoughtful participant in a group discussion about: "${currentPiece?.title || "an interesting topic"}". Context: ${currentPiece?.description || ""}. Someone just said: "${content}". Give a brief, engaging response (1-2 sentences max). Be natural, have your own perspective, and keep the conversation flowing. Don't be generic.`;
+        const aiResponse = await base44.integrations.Core.InvokeLLM({ prompt });
       }
     },
     onSuccess: () => {
