@@ -28,6 +28,12 @@
     },
     "feedback_text": {
       "type": "string"
+    },
+    "feedback_quality_score": {
+      "type": "number"
+    },
+    "quality_note": {
+      "type": "string"
     }
   },
   "required": [

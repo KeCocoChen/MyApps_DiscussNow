@@ -43,6 +43,9 @@
     },
     "custom_avatar_urls": {
       "type": "string"
+    },
+    "feedback_credibility": {
+      "type": "number"
     }
   },
   "required": [

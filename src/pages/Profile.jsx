@@ -40,13 +40,23 @@ export default function Profile() {
     enabled: !!user?.email && profiles.length > 0,
   });
 
-  const computedBadge = feedbackAsLiked.length >= 10
+  // Weight likes by feedback quality score — only credible praise counts
+  const weightedLikeScore = feedbackAsLiked
+    .reduce((sum, f) => sum + (f.feedback_quality_score ?? 0.3), 0);
+
+  const computedBadge = weightedLikeScore >= 8
     ? "Community Favorite"
-    : feedbackAsLiked.length >= 5
+    : weightedLikeScore >= 4
     ? "Thought Leader"
-    : feedbackAsLiked.length >= 3
+    : weightedLikeScore >= 2
     ? "Great Presence"
     : null;
+
+  const credibility = profile?.feedback_credibility ?? null;
+  const credibilityLabel = credibility === null ? null
+    : credibility >= 0.75 ? "Sharp Critic"
+    : credibility >= 0.5 ? "Fair Observer"
+    : "Still calibrating";
 
   const profile = profiles[0] || null;
   const [form, setForm] = useState({});
@@ -149,6 +159,9 @@ export default function Profile() {
                   <Award className="w-3.5 h-3.5" />
                   {computedBadge}
                 </div>
+              )}
+              {credibilityLabel && (
+                <div className="text-xs text-muted-foreground mt-0.5">{credibilityLabel}</div>
               )}
             </div>
           </div>

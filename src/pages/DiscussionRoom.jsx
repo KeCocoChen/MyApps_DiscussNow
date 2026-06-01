@@ -100,8 +100,11 @@ export default function DiscussionRoom() {
     const displayName = participants.find((p) => p.user_email === user.email)?.display_name || user.full_name || "";
     if (!displayName) return;
     base44.entities.DiscussionFeedback.list().then((all) => {
-      const dislikeCount = all.filter((f) => f.disliked_participant === displayName).length;
-      if (dislikeCount >= 3) {
+      // Weight dislikes by feedback quality — low-quality votes count less
+      const weightedDislikeScore = all
+        .filter((f) => f.disliked_participant === displayName)
+        .reduce((sum, f) => sum + (f.feedback_quality_score ?? 0.3), 0);
+      if (weightedDislikeScore >= 2.0) {
         setSupportMode(true);
         // Add a supportive AI companion if not already present
         const hasHarmony = participants.some((p) => p.display_name === "Harmony (AI)");
@@ -149,7 +152,7 @@ export default function DiscussionRoom() {
   });
 
   const handleSurveySubmit = async ({ rating, likedParticipant, dislikedParticipant, feedbackType, feedbackText }) => {
-    await base44.entities.DiscussionFeedback.create({
+    const record = await base44.entities.DiscussionFeedback.create({
       session_id: sessionId,
       user_email: user?.email,
       enjoyment_rating: rating,
@@ -158,6 +161,48 @@ export default function DiscussionRoom() {
       feedback_type: feedbackType || undefined,
       feedback_text: feedbackText,
     });
+
+    // Score feedback quality in background — don't block navigation
+    (async () => {
+      const hasText = feedbackText && feedbackText.trim().length > 20;
+      const hasChoice = !!(likedParticipant || dislikedParticipant);
+      const result = await base44.integrations.Core.InvokeLLM({
+        prompt: `You are evaluating the quality of a discussion feedback submission. Rate how honest, reasoned, and intellectually grounded this feedback is (0.0 = purely emotional/random/empty, 1.0 = specific, coherent, evidence-based reasoning).
+
+Feedback data:
+- Enjoyment rating: ${rating}/10
+- Liked participant: ${likedParticipant || "none"}
+- Disliked participant: ${dislikedParticipant || "none"}
+- Written feedback: "${feedbackText || "(none)"}"
+- Feedback type: ${feedbackType || "none"}
+
+Consider: Does the written text justify the choices? Is it specific or vague? Does it distinguish between personality and argument quality? Is it consistent? Empty or generic text scores low. Return ONLY a JSON object: {"score": <0.0-1.0>, "note": "<one short sentence explaining the score>"}`,
+        response_json_schema: {
+          type: "object",
+          properties: {
+            score: { type: "number" },
+            note: { type: "string" }
+          }
+        }
+      });
+
+      const score = Math.min(1, Math.max(0, result?.score ?? (hasText ? 0.5 : hasChoice ? 0.3 : 0.1)));
+      await base44.entities.DiscussionFeedback.update(record.id, {
+        feedback_quality_score: score,
+        quality_note: result?.note || "",
+      });
+
+      // Update submitting user's credibility score (EMA)
+      const userProfiles = await base44.entities.UserProfile.filter({ user_email: user?.email });
+      if (userProfiles[0]) {
+        const prev = userProfiles[0].feedback_credibility ?? 0.5;
+        const updated = prev * 0.75 + score * 0.25;
+        await base44.entities.UserProfile.update(userProfiles[0].id, {
+          feedback_credibility: Math.round(updated * 100) / 100,
+        });
+      }
+    })();
+
     navigate("/");
   };
 
