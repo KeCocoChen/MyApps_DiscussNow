@@ -135,16 +135,15 @@ export default function DiscussionRoom() {
         is_ai: false,
       });
 
-      // AI responds when room is quiet (few real participants)
-      const realCount = participants.filter((p) => !p.is_ai).length;
-      if (realCount < 5 && messages.length % 3 === 0) {
-        const isHarmonyTurn = supportMode && messages.length % 6 === 0;
-        const aiName = isHarmonyTurn ? "Harmony" : AI_NAMES[messages.length % AI_NAMES.length];
-        const prompt = isHarmonyTurn
-          ? `You are "Harmony", a warm and emotionally intelligent AI in a group discussion about "${currentPiece?.title || "an interesting topic"}". Someone just said: "${content}". Respond with genuine empathy and curiosity, helping them feel heard and valued. Keep it to 1-2 sentences — natural and supportive, never clinical or preachy.`
-          : `You are "${aiName}", a thoughtful participant in a group discussion about: "${currentPiece?.title || "an interesting topic"}". Context: ${currentPiece?.description || ""}. Someone just said: "${content}". Give a brief, engaging response (1-2 sentences max). Be natural, have your own perspective, and keep the conversation flowing. Don't be generic.`;
-        const aiResponse = await base44.integrations.Core.InvokeLLM({ prompt });
-      }
+      // Always get a real AI response
+      await base44.functions.invoke('aiChat', {
+        sessionId,
+        userMessage: content,
+        userName: user?.full_name || "Anonymous",
+        contentTitle: currentPiece?.title || "",
+        contentDesc: currentPiece?.description || "",
+        messageCount: messages.length,
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["messages", sessionId] });
