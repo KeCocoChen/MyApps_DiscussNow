@@ -7,7 +7,7 @@ function getTimeLeft() {
   return Math.max(0, Math.ceil(now / interval) * interval - now);
 }
 
-export default function SessionTimer() {
+export default function SessionTimer({ format = "full" }) {
   const [timeLeft, setTimeLeft] = useState(getTimeLeft());
 
   useEffect(() => {
@@ -18,8 +18,12 @@ export default function SessionTimer() {
   const mins = Math.floor(timeLeft / 60000);
   const secs = Math.floor((timeLeft % 60000) / 1000);
 
+  if (format === "mins") {
+    return <span>{mins} min</span>;
+  }
+
   return (
-    <span className="font-mono text-sm tabular-nums text-muted-foreground">
+    <span className="font-mono tabular-nums">
       {mins}:{secs.toString().padStart(2, "0")}
     </span>
   );

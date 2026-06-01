@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
-import { Users, ArrowRight, Sparkles, Clock } from "lucide-react";
+import { ArrowRight, Sparkles } from "lucide-react";
 import ContentDisplay from "../components/ContentDisplay";
 import WaitingRoomQuotes from "../components/WaitingRoomQuotes";
 import SessionTimer from "../components/SessionTimer";
@@ -79,17 +79,24 @@ export default function Home() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-10 space-y-10">
-      {/* Single status strip */}
-      <div className="flex items-center justify-between border-b border-border/30 pb-5">
-        <div className="flex items-center gap-2 text-xs text-muted-foreground">
-          <Users className="w-3.5 h-3.5" />
-          <span>{realCount} in the room</span>
+    <div className="max-w-2xl mx-auto px-4 pt-8 pb-16 space-y-8">
+      {/* WSJ-style top header */}
+      <div className="flex items-start justify-between border-b border-foreground/15 pb-4">
+        {/* Left: people + timer stacked */}
+        <div className="space-y-0.5">
+          <p className="text-sm font-semibold text-foreground">
+            {participants.length} {participants.length === 1 ? "person" : "people"} in the waiting room
+          </p>
+          <p className="text-xs text-muted-foreground">
+            Next discussion in <SessionTimer format="mins" />
+          </p>
         </div>
-        <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-          <Clock className="w-3 h-3" />
-          <span>opens in</span>
-          <SessionTimer />
+        {/* Right: prominent countdown */}
+        <div className="text-right">
+          <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-medium">Next drop</p>
+          <p className="text-xl font-semibold text-foreground leading-tight">
+            <SessionTimer format="full" />
+          </p>
         </div>
       </div>
 
@@ -126,31 +133,36 @@ export default function Home() {
         </div>
       )}
 
-      {/* Explore more */}
+      {/* Explore more + secondary timer */}
       {currentPiece && extras.length < 5 && (
-        <div className="flex justify-center">
+        <div className="flex flex-col items-center gap-1.5">
           <button
             onClick={handleExplore}
             disabled={isExploring}
-            className="text-xs text-muted-foreground hover:text-foreground disabled:opacity-30 transition-colors tracking-wide"
+            className="text-xs text-muted-foreground hover:text-foreground disabled:opacity-30 transition-colors underline underline-offset-4 decoration-muted-foreground/40"
           >
-            {isExploring ? "thinking..." : "tell me more →"}
+            {isExploring ? "thinking..." : "Tell me more before the discussion happens"}
           </button>
+          <p className="text-[11px] text-muted-foreground/60">
+            Discussion in <SessionTimer format="mins" />
+          </p>
         </div>
       )}
 
-      {/* Main CTA */}
-      <div className="flex flex-col items-center gap-3 py-2">
+      {/* Main CTA — WSJ style */}
+      <div className="border-t border-b border-foreground/10 py-5 flex items-center justify-between">
+        <div>
+          <p className="text-xs uppercase tracking-widest text-muted-foreground font-medium mb-0.5">Join the conversation</p>
+          <p className="text-sm text-foreground/70">New session every 30 minutes</p>
+        </div>
         <Button
-          size="lg"
           onClick={() => setShowQ(true)}
-          className="gap-2 px-10 rounded-full shadow-md shadow-primary/15 hover:shadow-primary/25 transition-shadow"
+          className="gap-2 rounded-none px-6 h-10 text-sm font-semibold"
           disabled={joinMutation.isPending}
         >
-          {joinMutation.isPending ? "Joining..." : "Join this discussion"}
+          {joinMutation.isPending ? "Joining..." : "Join"}
           <ArrowRight className="w-4 h-4" />
         </Button>
-        <p className="text-xs text-muted-foreground/60 tracking-wide">new session every 30 minutes</p>
       </div>
 
       {/* Waiting room quote */}
