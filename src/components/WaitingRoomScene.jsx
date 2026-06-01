@@ -26,9 +26,9 @@ const GOAL_TAGS = {
   no_goal: "Just Vibing",
 };
 
-// "Sweet September" by Arulo — Mixkit Free License (free for commercial use)
-// https://mixkit.co/free-stock-music/lo-fi-beats/
-const MUSIC_SRC = "https://assets.mixkit.co/music/282/282.mp3";
+// "Clair de Lune - Claude Debussy - Moonlight" — Pixabay Free License (free for commercial use, no attribution required)
+// https://pixabay.com/music/classical-piano-clair-de-lune-claude-debussy-moonlight-163848/
+const MUSIC_SRC = "https://cdn.pixabay.com/download/audio/2023/06/05/audio_163848.mp3";
 
 export default function WaitingRoomScene({ participants = [], piece, extras = [], onExplore, isExploring }) {
   const [playing, setPlaying] = useState(true);
