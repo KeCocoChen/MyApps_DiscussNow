@@ -4,9 +4,10 @@ import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Send, ArrowLeft, MessageCircle } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ChatBubble from "../components/ChatBubble";
 import ParticipantList from "../components/ParticipantList";
+import PostDiscussionSurvey from "../components/PostDiscussionSurvey";
 
 const AI_NAMES = ["Sage", "Nova", "Echo", "Pixel", "Atlas"];
 
@@ -17,6 +18,9 @@ export default function DiscussionRoom() {
   const [user, setUser] = useState(null);
   const messagesEndRef = useRef(null);
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
+  const [showSurvey, setShowSurvey] = useState(false);
+  const boostedSessionRef = useRef(null);
 
   useEffect(() => {
     base44.auth.me().then(setUser);
@@ -32,7 +36,7 @@ export default function DiscussionRoom() {
       ),
   });
 
-  const { data: participants = [] } = useQuery({
+  const { data: participants = [], isFetched: participantsFetched } = useQuery({
     queryKey: ["participants", sessionId],
     queryFn: () =>
       base44.entities.SessionParticipant.filter({ session_id: sessionId }),
@@ -59,6 +63,33 @@ export default function DiscussionRoom() {
     });
     return unsub;
   }, [sessionId, queryClient]);
+
+  // Ensure at least 2 AI participants
+  useEffect(() => {
+    if (!sessionId || !participantsFetched || boostedSessionRef.current === sessionId) return;
+    boostedSessionRef.current = sessionId;
+    const aiCount = participants.filter((p) => p.is_ai).length;
+    if (aiCount < 2) {
+      const needed = 2 - aiCount;
+      const existingAiNames = new Set(participants.filter((p) => p.is_ai).map((p) => p.display_name));
+      const botsToAdd = AI_NAMES.filter((n) => !existingAiNames.has(`${n} (AI)`)).slice(0, needed);
+      Promise.all(
+        botsToAdd.map((name) =>
+          base44.entities.SessionParticipant.create({
+            session_id: sessionId,
+            user_email: `${name.toLowerCase()}@ai.discussnow`,
+            display_name: `${name} (AI)`,
+            attitude: "neutral",
+            will_initiate: "likely",
+            mood: "chill",
+            goal: "intellectual_stimulation",
+            is_ai: true,
+            talk_score: 5,
+          })
+        )
+      ).then(() => queryClient.invalidateQueries({ queryKey: ["participants", sessionId] }));
+    }
+  }, [sessionId, participantsFetched, participants, queryClient]);
 
   const sendMessage = useMutation({
     mutationFn: async (content) => {
@@ -91,6 +122,19 @@ export default function DiscussionRoom() {
     },
   });
 
+  const handleSurveySubmit = async ({ rating, likedParticipant, dislikedParticipant, feedbackType, feedbackText }) => {
+    await base44.entities.DiscussionFeedback.create({
+      session_id: sessionId,
+      user_email: user?.email,
+      enjoyment_rating: rating,
+      liked_participant: likedParticipant,
+      disliked_participant: dislikedParticipant,
+      feedback_type: feedbackType || undefined,
+      feedback_text: feedbackText,
+    });
+    navigate("/");
+  };
+
   const handleSend = () => {
     if (!message.trim()) return;
     sendMessage.mutate(message);
@@ -103,12 +147,12 @@ export default function DiscussionRoom() {
       <div className="flex-1 flex flex-col min-w-0">
         {/* Header */}
         <div className="border-b border-border/60 px-4 py-3 flex items-center gap-3 bg-card/50 backdrop-blur-sm">
-          <Link
-            to="/"
+          <button
+            onClick={() => setShowSurvey(true)}
             className="text-muted-foreground hover:text-foreground transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
-          </Link>
+          </button>
           <div className="min-w-0">
             <h2 className="font-heading font-semibold text-sm truncate">
               {currentPiece?.title || "Discussion Room"}
@@ -167,6 +211,13 @@ export default function DiscussionRoom() {
       <div className="hidden md:block w-64 border-l border-border/60 bg-card/30">
         <ParticipantList participants={participants} />
       </div>
+
+      <PostDiscussionSurvey
+        open={showSurvey}
+        onClose={() => { setShowSurvey(false); navigate("/"); }}
+        onSubmit={handleSurveySubmit}
+        participants={participants}
+      />
     </div>
   );
 }

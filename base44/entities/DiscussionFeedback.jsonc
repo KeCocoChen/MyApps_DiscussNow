@@ -1,0 +1,36 @@
+{
+  "name": "DiscussionFeedback",
+  "type": "object",
+  "properties": {
+    "session_id": {
+      "type": "string"
+    },
+    "user_email": {
+      "type": "string"
+    },
+    "enjoyment_rating": {
+      "type": "number"
+    },
+    "liked_participant": {
+      "type": "string"
+    },
+    "disliked_participant": {
+      "type": "string"
+    },
+    "feedback_type": {
+      "type": "string",
+      "enum": [
+        "report_bad_behavior",
+        "report_bug",
+        "suggestion",
+        "other"
+      ]
+    },
+    "feedback_text": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "session_id"
+  ]
+}

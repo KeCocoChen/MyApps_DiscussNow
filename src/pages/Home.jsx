@@ -5,6 +5,7 @@ import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Users, ArrowRight, Sparkles } from "lucide-react";
 import ContentDisplay from "../components/ContentDisplay";
+import WaitingRoomQuotes from "../components/WaitingRoomQuotes";
 import SessionTimer from "../components/SessionTimer";
 import JoinQuestionnaire from "../components/JoinQuestionnaire";
 
@@ -16,6 +17,8 @@ function getSessionIndex() {
 
 export default function Home() {
   const [showQ, setShowQ] = useState(false);
+  const [extras, setExtras] = useState([]);
+  const [isExploring, setIsExploring] = useState(false);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const sessionIndex = useMemo(() => getSessionIndex(), []);
@@ -64,6 +67,17 @@ export default function Home() {
 
   const realCount = participants.filter((p) => !p.is_ai).length;
 
+  const handleExplore = async () => {
+    if (!currentPiece || isExploring || extras.length >= 5) return;
+    setIsExploring(true);
+    const prevThemes = extras.map((e, i) => `${i + 1}. ${e.slice(0, 60)}`).join(" | ");
+    const insight = await base44.integrations.Core.InvokeLLM({
+      prompt: `Give one fascinating angle, fact, or question about "${currentPiece.title}" (${currentPiece.type || "piece"} by ${currentPiece.author || "unknown"}). Context: ${currentPiece.description || ""}. Keep it to 2-3 sentences max. Make it thought-provoking for a group discussion. ${prevThemes ? `Don't repeat these themes: ${prevThemes}` : ""}`,
+    });
+    setExtras((prev) => [...prev, insight]);
+    setIsExploring(false);
+  };
+
   return (
     <div className="max-w-2xl mx-auto px-4 py-8 space-y-8">
       {/* Status bar */}
@@ -96,19 +110,37 @@ export default function Home() {
         </div>
       )}
 
-      {/* Join CTA */}
-      <div className="flex justify-center pt-4">
-        <Button
-          size="lg"
-          onClick={() => setShowQ(true)}
-          className="gap-2 px-8 shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-shadow"
-          disabled={joinMutation.isPending}
-        >
-          {joinMutation.isPending ? "Joining..." : "Join the discussion"}
-          <ArrowRight className="w-4 h-4" />
-        </Button>
-      </div>
+      {/* Extras */}
+      {extras.length > 0 && (
+        <div className="space-y-3">
+          {extras.map((insight, i) => (
+            <div
+              key={i}
+              className="bg-muted/60 rounded-xl px-4 py-3 text-sm text-foreground/85 leading-relaxed border-l-2 border-primary/40"
+            >
+              {insight}
+            </div>
+          ))}
+        </div>
+      )}
 
+      {/* Explore more */}
+      {currentPiece && extras.length < 5 && (
+        <div className="flex justify-center">
+          <button
+            onClick={handleExplore}
+            disabled={isExploring}
+            className="text-sm text-primary hover:text-primary/80 disabled:opacity-40 transition-opacity"
+          >
+            {isExploring ? "Finding something interesting..." : "Tell me more about this →"}
+          </button>
+        </div>
+      )}
+
+      {/* Waiting room quote */}
+      <WaitingRoomQuotes />
+
+      {/* Join CTA */}
       <JoinQuestionnaire
         open={showQ}
         onClose={() => setShowQ(false)}
