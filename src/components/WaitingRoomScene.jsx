@@ -26,9 +26,9 @@ const GOAL_TAGS = {
   no_goal: "Just Vibing",
 };
 
-// "Clair de Lune - Debussy" — Pixabay Free License (free for commercial use)
-// https://pixabay.com/music/classical-piano-clair-de-lune-claude-debussy-moonlight-163848/
-const MUSIC_SRC = "https://cdn.pixabay.com/download/audio/2022/10/25/audio_03c5f3837e.mp3";
+// "Gymnopédie No. 1 - Satie" — Pixabay Free License (free for commercial use, no drums)
+// Gentle, dreamy piano solo - perfect for calm atmosphere
+const MUSIC_SRC = "https://cdn.pixabay.com/audio/2022/05/27/audio_18f2e17f6f.mp3";
 
 export default function WaitingRoomScene({ participants = [], piece, extras = [], onExplore, isExploring }) {
   const [playing, setPlaying] = useState(true);
