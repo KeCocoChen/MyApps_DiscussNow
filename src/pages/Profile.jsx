@@ -10,12 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { MapPin, LogOut } from "lucide-react";
 import { toast } from "sonner";
 
-const socials = [
-  { key: "instagram", label: "Instagram", placeholder: "@username" },
-  { key: "twitter", label: "Twitter / X", placeholder: "@handle" },
-  { key: "discord", label: "Discord", placeholder: "username#1234" },
-  { key: "linkedin", label: "LinkedIn", placeholder: "linkedin.com/in/..." },
-];
+
 
 export default function Profile() {
   const [user, setUser] = useState(null);
@@ -162,26 +157,10 @@ export default function Profile() {
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base">Connect Elsewhere</CardTitle>
-          <p className="text-sm text-muted-foreground">
-            Help fellow discussers find you on other platforms.
-          </p>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          {socials.map(({ key, label, placeholder }) => (
-            <div key={key} className="space-y-1">
-              <Label className="text-xs text-muted-foreground">{label}</Label>
-              <Input
-                value={form[key] || ""}
-                onChange={(e) => update(key, e.target.value)}
-                placeholder={placeholder}
-              />
-            </div>
-          ))}
-        </CardContent>
-      </Card>
+      <div className="rounded-xl border border-border bg-accent/40 p-4 text-sm text-muted-foreground space-y-1">
+        <p className="font-medium text-foreground">No direct messages here.</p>
+        <p>discuss_now is about real-time conversation. If you click with someone, tell them during the discussion — that\'s the whole point.</p>
+      </div>
 
       <Button
         onClick={() => saveMutation.mutate(form)}

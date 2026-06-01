@@ -81,13 +81,19 @@ export default function Home() {
   return (
     <div className="max-w-2xl mx-auto px-4 py-8 space-y-8">
       {/* Status bar */}
-      <div className="flex items-center justify-between">
-        <SessionTimer />
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <Users className="w-4 h-4" />
-          <span>
-            {realCount} {realCount === 1 ? "person" : "people"} discussing
-          </span>
+      <div className="space-y-2">
+        <p className="text-xs text-muted-foreground uppercase tracking-wide font-medium">The discussion begins in</p>
+        <div className="flex items-center justify-between">
+          <SessionTimer />
+          <div className="flex flex-col items-end gap-2">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Users className="w-4 h-4" />
+              <span>{realCount} in the waiting room</span>
+            </div>
+            <Button size="sm" variant="outline" onClick={() => setShowQ(true)} className="text-xs h-7 px-3">
+              Join waiting room
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -127,13 +133,14 @@ export default function Home() {
       {/* Explore more */}
       {currentPiece && extras.length < 5 && (
         <div className="flex justify-center">
-          <button
+          <Button
+            variant="outline"
             onClick={handleExplore}
             disabled={isExploring}
-            className="text-sm text-primary hover:text-primary/80 disabled:opacity-40 transition-opacity"
+            size="sm"
           >
-            {isExploring ? "Finding something interesting..." : "Tell me more about this →"}
-          </button>
+            {isExploring ? "Finding something interesting..." : "Tell me more about this"}
+          </Button>
         </div>
       )}
 
@@ -141,6 +148,17 @@ export default function Home() {
       <WaitingRoomQuotes />
 
       {/* Join CTA */}
+      <div className="flex justify-center pb-4">
+        <Button
+          size="lg"
+          onClick={() => setShowQ(true)}
+          className="gap-2 px-8 shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-shadow"
+          disabled={joinMutation.isPending}
+        >
+          {joinMutation.isPending ? "Joining..." : "Join the discussion"}
+          <ArrowRight className="w-4 h-4" />
+        </Button>
+      </div>
       <JoinQuestionnaire
         open={showQ}
         onClose={() => setShowQ(false)}
