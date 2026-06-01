@@ -7,13 +7,15 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { MapPin, LogOut } from "lucide-react";
+import { MapPin, LogOut, Pencil } from "lucide-react";
+import AvatarPicker from "../components/AvatarPicker";
 import { toast } from "sonner";
 
 
 
 export default function Profile() {
   const [user, setUser] = useState(null);
+  const [showAvatarPicker, setShowAvatarPicker] = useState(false);
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -37,11 +39,9 @@ export default function Profile() {
         bio: profile.bio || "",
         city: profile.city || "",
         interests: profile.interests || "",
-        instagram: profile.instagram || "",
-        twitter: profile.twitter || "",
-        discord: profile.discord || "",
-        linkedin: profile.linkedin || "",
         open_to_meetup: profile.open_to_meetup || false,
+        avatar_url: profile.avatar_url || "",
+        custom_avatar_urls: profile.custom_avatar_urls || "[]",
       });
     } else if (user) {
       setForm({
@@ -49,11 +49,9 @@ export default function Profile() {
         bio: "",
         city: "",
         interests: "",
-        instagram: "",
-        twitter: "",
-        discord: "",
-        linkedin: "",
         open_to_meetup: false,
+        avatar_url: "",
+        custom_avatar_urls: "[]",
       });
     }
   }, [profile, user]);
@@ -103,7 +101,26 @@ export default function Profile() {
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">About You</CardTitle>
+          <div className="flex items-center gap-4">
+            <div className="relative">
+              <div className="w-16 h-16 rounded-full overflow-hidden bg-muted flex items-center justify-center border border-border">
+                {form.avatar_url ? (
+                  <img src={form.avatar_url} alt="avatar" className="w-full h-full object-cover" />
+                ) : (
+                  <span className="text-2xl font-semibold text-muted-foreground">
+                    {(form.display_name || user?.full_name || "?")[0].toUpperCase()}
+                  </span>
+                )}
+              </div>
+              <button
+                onClick={() => setShowAvatarPicker(true)}
+                className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-sm hover:bg-primary/90 transition-colors"
+              >
+                <Pencil className="w-3 h-3" />
+              </button>
+            </div>
+            <CardTitle className="text-base">About You</CardTitle>
+          </div>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
@@ -169,6 +186,23 @@ export default function Profile() {
       >
         {saveMutation.isPending ? "Saving..." : "Save profile"}
       </Button>
+
+      <AvatarPicker
+        open={showAvatarPicker}
+        onClose={() => setShowAvatarPicker(false)}
+        currentAvatar={form.avatar_url}
+        onSelect={(url) => {
+          update("avatar_url", url);
+          setShowAvatarPicker(false);
+        }}
+        customAvatars={JSON.parse(form.custom_avatar_urls || "[]")}
+        onUploadComplete={(url, updated) => {
+          update("avatar_url", url);
+          update("custom_avatar_urls", JSON.stringify(updated));
+          setShowAvatarPicker(false);
+        }}
+        isPremium={profile?.is_premium || false}
+      />
     </div>
   );
 }
