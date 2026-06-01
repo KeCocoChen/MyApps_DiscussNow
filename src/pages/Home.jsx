@@ -86,7 +86,7 @@ export default function Home() {
         {/* Left: people + timer stacked */}
         <div className="space-y-0.5">
           <p className="text-sm font-semibold text-foreground">
-            {participants.length} {participants.length === 1 ? "person" : "people"} in the waiting room
+            {Math.max(participants.length, 2)} people in the waiting room
           </p>
           <p className="text-xs text-muted-foreground">
             Next discussion in <SessionTimer format="mins" />
