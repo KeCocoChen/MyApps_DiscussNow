@@ -7,7 +7,7 @@ import { ArrowRight, Sparkles } from "lucide-react";
 import ContentDisplay from "../components/ContentDisplay";
 import WaitingRoomAvatars from "../components/WaitingRoomAvatars";
 import WaitingRoomQuotes from "../components/WaitingRoomQuotes";
-import WaitingRoomMusic from "../components/WaitingRoomMusic";
+
 import SessionTimer from "../components/SessionTimer";
 import JoinQuestionnaire from "../components/JoinQuestionnaire";
 
@@ -123,14 +123,38 @@ export default function Home() {
 
 
 
-      {/* Waiting room */}
-      <WaitingRoomAvatars
-        participants={participants}
-        piece={currentPiece}
-        extras={extras}
-        onExplore={currentPiece && extras.length < 5 ? handleExplore : null}
-        isExploring={isExploring}
-      />
+      {/* Extras */}
+      {extras.length > 0 && (
+        <div className="space-y-2.5">
+          {extras.map((insight, i) => (
+            <div
+              key={i}
+              className="text-sm text-foreground/75 leading-relaxed pl-4 border-l border-primary/30 italic"
+            >
+              {insight}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Explore more + secondary timer */}
+      {currentPiece && extras.length < 5 && (
+        <div className="flex flex-col items-center gap-1.5">
+          <button
+            onClick={handleExplore}
+            disabled={isExploring}
+            className="text-xs text-muted-foreground hover:text-foreground disabled:opacity-30 transition-colors underline underline-offset-4 decoration-muted-foreground/40"
+          >
+            {isExploring ? "thinking..." : "Tell me more before the discussion happens"}
+          </button>
+          <p className="text-[11px] text-muted-foreground/60">
+            Discussion in <SessionTimer format="mins" />
+          </p>
+        </div>
+      )}
+
+      {/* Waiting room avatars */}
+      <WaitingRoomAvatars participants={participants} />
 
       {/* Main CTA — WSJ style */}
       <div className="border-t border-b border-foreground/10 py-5 flex items-center justify-between">
@@ -148,11 +172,8 @@ export default function Home() {
         </Button>
       </div>
 
-      {/* Music + quote */}
-      <div className="flex items-center justify-between">
-        <WaitingRoomMusic />
-        <WaitingRoomQuotes />
-      </div>
+      {/* Waiting room quote */}
+      <WaitingRoomQuotes />
 
       <JoinQuestionnaire
         open={showQ}
