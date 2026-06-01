@@ -1,0 +1,69 @@
+import { useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { base44 } from "@/api/base44Client";
+import { Button } from "@/components/ui/button";
+import { ArrowRight } from "lucide-react";
+import WaitingRoomScene from "../components/WaitingRoomScene";
+import WaitingRoomQuotes from "../components/WaitingRoomQuotes";
+
+const SESSION_INTERVAL = 30 * 60 * 1000;
+function getSessionIndex() {
+  return Math.floor(Date.now() / SESSION_INTERVAL);
+}
+
+export default function WaitingRoom() {
+  const navigate = useNavigate();
+  const [extras, setExtras] = useState([]);
+  const [isExploring, setIsExploring] = useState(false);
+  const sessionIndex = useMemo(() => getSessionIndex(), []);
+
+  const { data: pieces = [] } = useQuery({
+    queryKey: ["contentPieces"],
+    queryFn: () => base44.entities.ContentPiece.list(),
+  });
+
+  const { data: participants = [] } = useQuery({
+    queryKey: ["participants", sessionIndex],
+    queryFn: () =>
+      base44.entities.SessionParticipant.filter({ session_id: String(sessionIndex) }),
+    refetchInterval: 15000,
+  });
+
+  const currentPiece = pieces.length > 0 ? pieces[sessionIndex % pieces.length] : null;
+
+  const handleExplore = async () => {
+    if (!currentPiece || isExploring || extras.length >= 5) return;
+    setIsExploring(true);
+    const prevThemes = extras.map((e, i) => `${i + 1}. ${e.slice(0, 60)}`).join(" | ");
+    const insight = await base44.integrations.Core.InvokeLLM({
+      prompt: `Give one fascinating angle, fact, or question about "${currentPiece.title}" (${currentPiece.type || "piece"} by ${currentPiece.author || "unknown"}). Context: ${currentPiece.description || ""}. Keep it to 2-3 sentences max. Make it thought-provoking for a group discussion. ${prevThemes ? `Don't repeat these themes: ${prevThemes}` : ""}`,
+    });
+    setExtras((prev) => [...prev, insight]);
+    setIsExploring(false);
+  };
+
+  return (
+    <div className="max-w-2xl mx-auto px-4 pt-8 pb-16 space-y-6">
+      <WaitingRoomScene
+        participants={participants}
+        piece={currentPiece}
+        extras={extras}
+        onExplore={currentPiece && extras.length < 5 ? handleExplore : null}
+        isExploring={isExploring}
+      />
+
+      <WaitingRoomQuotes />
+
+      <div className="flex justify-end">
+        <Button
+          onClick={() => navigate(`/room?session=${sessionIndex}`)}
+          className="gap-2 rounded-none px-6 h-10 text-sm font-semibold"
+        >
+          Enter Discussion
+          <ArrowRight className="w-4 h-4" />
+        </Button>
+      </div>
+    </div>
+  );
+}

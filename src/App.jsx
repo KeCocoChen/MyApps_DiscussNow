@@ -10,6 +10,7 @@ import { Navigate } from 'react-router-dom';
 import Layout from './components/Layout';
 import Home from './pages/Home';
 import DiscussionRoom from './pages/DiscussionRoom';
+import WaitingRoom from './pages/WaitingRoom';
 import Profile from './pages/Profile';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -50,6 +51,7 @@ const AuthenticatedApp = () => {
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
           <Route path="/room" element={<DiscussionRoom />} />
+          <Route path="/waiting" element={<WaitingRoom />} />
           <Route path="/profile" element={<Profile />} />
         </Route>
       </Route>
