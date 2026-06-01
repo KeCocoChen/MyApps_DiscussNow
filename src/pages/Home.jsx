@@ -134,13 +134,24 @@ export default function Home() {
         </div>
       )}
 
+      {/* Explore more + secondary timer */}
+      {currentPiece && extras.length < 5 && (
+        <div className="flex flex-col items-center gap-1.5">
+          <button
+            onClick={handleExplore}
+            disabled={isExploring}
+            className="text-xs text-muted-foreground hover:text-foreground disabled:opacity-30 transition-colors underline underline-offset-4 decoration-muted-foreground/40"
+          >
+            {isExploring ? "thinking..." : "Tell me more before the discussion happens"}
+          </button>
+          <p className="text-[11px] text-muted-foreground/60">
+            Discussion in <SessionTimer format="mins" />
+          </p>
+        </div>
+      )}
+
       {/* Waiting room avatars */}
-      <WaitingRoomAvatars
-        participants={participants}
-        contentPiece={extras.length < 5 ? currentPiece : null}
-        onExplore={handleExplore}
-        isExploring={isExploring}
-      />
+      <WaitingRoomAvatars participants={participants} />
 
       {/* Main CTA — WSJ style */}
       <div className="border-t border-b border-foreground/10 py-5 flex items-center justify-between">
