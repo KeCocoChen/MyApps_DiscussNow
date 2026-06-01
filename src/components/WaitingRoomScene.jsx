@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Sparkles, Music2, VolumeX } from "lucide-react";
 
@@ -29,8 +29,15 @@ const GOAL_TAGS = {
 const MUSIC_SRC = "https://cdn.pixabay.com/audio/2022/10/16/audio_12a6d9a175.mp3";
 
 export default function WaitingRoomScene({ participants = [], piece, extras = [], onExplore, isExploring }) {
-  const [playing, setPlaying] = useState(false);
+  const [playing, setPlaying] = useState(true);
   const audioRef = useRef(null);
+
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.volume = 0.2;
+      audioRef.current.play().catch(() => {});
+    }
+  }, []);
 
   const toggleMusic = () => {
     if (!audioRef.current) return;
