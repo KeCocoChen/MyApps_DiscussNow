@@ -1,0 +1,37 @@
+{
+  "name": "ContentPiece",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "article",
+        "video",
+        "painting",
+        "song"
+      ]
+    },
+    "description": {
+      "type": "string"
+    },
+    "content_body": {
+      "type": "string"
+    },
+    "image_url": {
+      "type": "string"
+    },
+    "author": {
+      "type": "string"
+    },
+    "source_url": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "title",
+    "type"
+  ]
+}

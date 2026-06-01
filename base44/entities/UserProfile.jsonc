@@ -1,0 +1,48 @@
+{
+  "name": "UserProfile",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string"
+    },
+    "display_name": {
+      "type": "string"
+    },
+    "bio": {
+      "type": "string"
+    },
+    "avatar_url": {
+      "type": "string"
+    },
+    "instagram": {
+      "type": "string"
+    },
+    "twitter": {
+      "type": "string"
+    },
+    "discord": {
+      "type": "string"
+    },
+    "linkedin": {
+      "type": "string"
+    },
+    "city": {
+      "type": "string"
+    },
+    "interests": {
+      "type": "string"
+    },
+    "talk_score": {
+      "type": "number"
+    },
+    "discussions_joined": {
+      "type": "number"
+    },
+    "open_to_meetup": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "user_email"
+  ]
+}

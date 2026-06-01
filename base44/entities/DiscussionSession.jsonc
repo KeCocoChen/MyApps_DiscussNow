@@ -1,0 +1,28 @@
+{
+  "name": "DiscussionSession",
+  "type": "object",
+  "properties": {
+    "content_piece_id": {
+      "type": "string"
+    },
+    "session_index": {
+      "type": "number"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "completed"
+      ]
+    },
+    "max_participants": {
+      "type": "number"
+    },
+    "participant_count": {
+      "type": "number"
+    }
+  },
+  "required": [
+    "session_index"
+  ]
+}

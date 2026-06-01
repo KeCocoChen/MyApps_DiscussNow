@@ -1,0 +1,60 @@
+{
+  "name": "SessionParticipant",
+  "type": "object",
+  "properties": {
+    "session_id": {
+      "type": "string"
+    },
+    "user_email": {
+      "type": "string"
+    },
+    "display_name": {
+      "type": "string"
+    },
+    "attitude": {
+      "type": "string",
+      "enum": [
+        "positive",
+        "negative",
+        "neutral"
+      ]
+    },
+    "will_initiate": {
+      "type": "string",
+      "enum": [
+        "likely",
+        "sometimes",
+        "unlikely"
+      ]
+    },
+    "mood": {
+      "type": "string",
+      "enum": [
+        "happy",
+        "sad",
+        "angry",
+        "chill",
+        "other"
+      ]
+    },
+    "goal": {
+      "type": "string",
+      "enum": [
+        "intellectual_stimulation",
+        "make_friends",
+        "argue",
+        "learn_more",
+        "no_goal"
+      ]
+    },
+    "is_ai": {
+      "type": "boolean"
+    },
+    "talk_score": {
+      "type": "number"
+    }
+  },
+  "required": [
+    "session_id"
+  ]
+}
