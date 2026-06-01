@@ -19,14 +19,8 @@ export default function SessionTimer() {
   const secs = Math.floor((timeLeft % 60000) / 1000);
 
   return (
-    <div className="flex items-center gap-2 text-muted-foreground text-sm">
-      <Clock className="w-4 h-4" />
-      <span>
-        Next drop in{" "}
-        <span className="font-mono font-medium text-foreground">
-          {mins}:{secs.toString().padStart(2, "0")}
-        </span>
-      </span>
-    </div>
+    <span className="font-mono text-sm tabular-nums text-muted-foreground">
+      {mins}:{secs.toString().padStart(2, "0")}
+    </span>
   );
 }

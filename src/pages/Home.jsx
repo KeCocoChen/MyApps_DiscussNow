@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
-import { Users, ArrowRight, Sparkles } from "lucide-react";
+import { Users, ArrowRight, Sparkles, Clock } from "lucide-react";
 import ContentDisplay from "../components/ContentDisplay";
 import WaitingRoomQuotes from "../components/WaitingRoomQuotes";
 import SessionTimer from "../components/SessionTimer";
@@ -79,21 +79,17 @@ export default function Home() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-8 space-y-8">
-      {/* Status bar */}
-      <div className="space-y-2">
-        <p className="text-xs text-muted-foreground uppercase tracking-wide font-medium">The discussion begins in</p>
-        <div className="flex items-center justify-between">
+    <div className="max-w-2xl mx-auto px-4 py-10 space-y-10">
+      {/* Single status strip */}
+      <div className="flex items-center justify-between border-b border-border/30 pb-5">
+        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+          <Users className="w-3.5 h-3.5" />
+          <span>{realCount} in the room</span>
+        </div>
+        <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+          <Clock className="w-3 h-3" />
+          <span>opens in</span>
           <SessionTimer />
-          <div className="flex flex-col items-end gap-2">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Users className="w-4 h-4" />
-              <span>{realCount} in the waiting room</span>
-            </div>
-            <Button size="sm" variant="outline" onClick={() => setShowQ(true)} className="text-xs h-7 px-3">
-              Join waiting room
-            </Button>
-          </div>
         </div>
       </div>
 
@@ -118,11 +114,11 @@ export default function Home() {
 
       {/* Extras */}
       {extras.length > 0 && (
-        <div className="space-y-3">
+        <div className="space-y-2.5">
           {extras.map((insight, i) => (
             <div
               key={i}
-              className="bg-muted/60 rounded-xl px-4 py-3 text-sm text-foreground/85 leading-relaxed border-l-2 border-primary/40"
+              className="text-sm text-foreground/75 leading-relaxed pl-4 border-l border-primary/30 italic"
             >
               {insight}
             </div>
@@ -133,32 +129,33 @@ export default function Home() {
       {/* Explore more */}
       {currentPiece && extras.length < 5 && (
         <div className="flex justify-center">
-          <Button
-            variant="outline"
+          <button
             onClick={handleExplore}
             disabled={isExploring}
-            size="sm"
+            className="text-xs text-muted-foreground hover:text-foreground disabled:opacity-30 transition-colors tracking-wide"
           >
-            {isExploring ? "Finding something interesting..." : "Tell me more about this"}
-          </Button>
+            {isExploring ? "thinking..." : "tell me more →"}
+          </button>
         </div>
       )}
+
+      {/* Main CTA */}
+      <div className="flex flex-col items-center gap-3 py-2">
+        <Button
+          size="lg"
+          onClick={() => setShowQ(true)}
+          className="gap-2 px-10 rounded-full shadow-md shadow-primary/15 hover:shadow-primary/25 transition-shadow"
+          disabled={joinMutation.isPending}
+        >
+          {joinMutation.isPending ? "Joining..." : "Join this discussion"}
+          <ArrowRight className="w-4 h-4" />
+        </Button>
+        <p className="text-xs text-muted-foreground/60 tracking-wide">new session every 30 minutes</p>
+      </div>
 
       {/* Waiting room quote */}
       <WaitingRoomQuotes />
 
-      {/* Join CTA */}
-      <div className="flex justify-center pb-4">
-        <Button
-          size="lg"
-          onClick={() => setShowQ(true)}
-          className="gap-2 px-8 shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-shadow"
-          disabled={joinMutation.isPending}
-        >
-          {joinMutation.isPending ? "Joining..." : "Join the discussion"}
-          <ArrowRight className="w-4 h-4" />
-        </Button>
-      </div>
       <JoinQuestionnaire
         open={showQ}
         onClose={() => setShowQ(false)}
