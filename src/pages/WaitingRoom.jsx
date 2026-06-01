@@ -2,6 +2,7 @@ import { useMemo, useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import WaitingRoomScene from "../components/WaitingRoomScene";
+import AnimalOverlay from "../components/AnimalOverlay";
 
 
 const BG_URL = "https://media.base44.com/images/public/6a1d1f0b92a437a5210e58cc/2bc8c55be_IMG_2444.png";
@@ -69,6 +70,9 @@ export default function WaitingRoom() {
       />
       {/* Dark gradient overlay for readability */}
       <div className="fixed inset-0 bg-gradient-to-b from-black/20 via-black/10 to-black/60" />
+
+      {/* Animals sitting in the room */}
+      <AnimalOverlay participants={participants} />
 
       {/* Content */}
       <div className="relative z-10 max-w-lg mx-auto px-4 pt-10 pb-20 space-y-5">

@@ -82,30 +82,6 @@ export default function WaitingRoomScene({ participants = [], piece, extras = []
         </div>
       </div>
 
-      {/* Animated participant avatars */}
-      <div className="flex items-end gap-4 py-2">
-        {allAvatars.map((p, i) => {
-          const animal = ANIMAL_IMAGES[i % ANIMAL_IMAGES.length];
-          const imgSrc = (p.is_ai || !p.avatar_url) ? animal.url : p.avatar_url;
-          const displayName = p.is_ai ? animal.name : (p.display_name || "Guest").split(" ")[0];
-          const tag = GOAL_TAGS[p.goal] || (p.is_ai ? "AI" : "Thinker");
-          return (
-            <motion.div
-              key={p.id || p.display_name || i}
-              className="flex flex-col items-center gap-1"
-              animate={{ y: [0, -7, 0] }}
-              transition={{ duration: 2.2 + i * 0.3, repeat: Infinity, ease: "easeInOut", delay: animal.delay }}
-            >
-              <p className="text-[10px] font-bold text-white leading-none" style={{ textShadow: "0 1px 6px rgba(0,0,0,1)" }}>{displayName}</p>
-              <span className="text-[8px] px-1.5 py-0.5 rounded-full bg-black/50 text-white/95 backdrop-blur-sm leading-none">{tag}</span>
-              <div className="w-16 h-16 rounded-full overflow-hidden shadow-xl border-2 border-white/60">
-                <img src={imgSrc} alt={displayName} className="w-full h-full object-cover" onError={(e) => { e.target.src = animal.url; }} />
-              </div>
-            </motion.div>
-          );
-        })}
-      </div>
-
       {/* Tell me more button */}
       {onExplore && (
         <button
