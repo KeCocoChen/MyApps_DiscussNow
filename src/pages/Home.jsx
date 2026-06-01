@@ -5,6 +5,7 @@ import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles } from "lucide-react";
 import ContentDisplay from "../components/ContentDisplay";
+import WaitingRoomAvatars from "../components/WaitingRoomAvatars";
 import WaitingRoomQuotes from "../components/WaitingRoomQuotes";
 import SessionTimer from "../components/SessionTimer";
 import JoinQuestionnaire from "../components/JoinQuestionnaire";
@@ -148,6 +149,9 @@ export default function Home() {
           </p>
         </div>
       )}
+
+      {/* Waiting room avatars */}
+      <WaitingRoomAvatars participants={participants} />
 
       {/* Main CTA — WSJ style */}
       <div className="border-t border-b border-foreground/10 py-5 flex items-center justify-between">
