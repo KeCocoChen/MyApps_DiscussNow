@@ -26,7 +26,9 @@ const GOAL_TAGS = {
   no_goal: "Just Vibing",
 };
 
-const MUSIC_SRC = "https://cdn.pixabay.com/audio/2022/10/16/audio_12a6d9a175.mp3";
+// "Sweet September" by Arulo — Mixkit Free License (free for commercial use)
+// https://mixkit.co/free-stock-music/lo-fi-beats/
+const MUSIC_SRC = "https://assets.mixkit.co/music/282/282.mp3";
 
 export default function WaitingRoomScene({ participants = [], piece, extras = [], onExplore, isExploring }) {
   const [playing, setPlaying] = useState(true);
