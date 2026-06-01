@@ -1,4 +1,5 @@
 import { useMemo, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import WaitingRoomScene from "../components/WaitingRoomScene";
@@ -14,6 +15,7 @@ function getSessionIndex() {
 
 export default function WaitingRoom() {
   const [extras, setExtras] = useState([]);
+  const navigate = useNavigate();
   const [timeLeft, setTimeLeft] = useState(() => {
     const interval = 30 * 60 * 1000;
     const now = Date.now();
@@ -55,7 +57,7 @@ export default function WaitingRoom() {
     const insight = await base44.integrations.Core.InvokeLLM({
       prompt: `Give one fascinating angle, fact, or question about "${currentPiece.title}" (${currentPiece.type || "piece"} by ${currentPiece.author || "unknown"}). Context: ${currentPiece.description || ""}. Keep it to 2-3 sentences max. Make it thought-provoking for a group discussion. ${prevThemes ? `Don't repeat these themes: ${prevThemes}` : ""}`,
     });
-    setExtras((prev) => [...prev, insight]);
+    setExtras([insight]);
     setIsExploring(false);
   };
 
@@ -98,6 +100,22 @@ export default function WaitingRoom() {
             <p className="text-sm font-semibold text-white">The discussion is live — listen in.</p>
           </div>
         )}
+
+        {/* Bottom-right action buttons */}
+        <div className="fixed bottom-6 right-5 flex flex-col gap-2 items-end" style={{ zIndex: 20 }}>
+          <button
+            onClick={() => navigate("/")}
+            className="text-xs text-white/80 hover:text-white bg-black/40 hover:bg-black/60 backdrop-blur-sm px-4 py-2 rounded-full border border-white/20 transition-all"
+          >
+            ← Back to the {currentPiece ? ({ article: "article", video: "video", painting: "painting", song: "song" }[currentPiece.type] || "piece") : "article"}
+          </button>
+          <button
+            onClick={() => navigate("/")}
+            className="text-xs text-white/50 hover:text-white/80 transition-colors px-2 py-1"
+          >
+            Exit room
+          </button>
+        </div>
       </div>
     </div>
   );

@@ -86,27 +86,22 @@ export default function WaitingRoomScene({ participants = [], piece, extras = []
       {onExplore && (
         <button
           onClick={onExplore}
-          disabled={isExploring || extras.length >= 5}
+          disabled={isExploring}
           className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border border-foreground/20 hover:bg-accent text-foreground/70 hover:text-foreground disabled:opacity-30 transition-all w-fit"
         >
           <Sparkles className="w-3 h-3" />
-          {isExploring ? "thinking…" : extras.length >= 5 ? "All caught up" : `Tell me more about the ${contentLabel} while waiting`}
+          {isExploring ? "thinking…" : extras.length > 0 ? `Tell me something else` : `Tell me more about the ${contentLabel}`}
         </button>
       )}
 
-      {/* LLM extras */}
+      {/* LLM extra — shows only the latest insight */}
       {extras.length > 0 && (
-        <div className="space-y-3">
-          {extras.map((insight, i) => (
-            <p
-              key={i}
-              className="text-sm leading-relaxed text-white pl-3 border-l-2 border-white/40"
-              style={{ textShadow: "0 1px 8px rgba(0,0,0,0.9), 0 0 20px rgba(0,0,0,0.7)", fontSize: "clamp(0.82rem, 1.5vw, 1rem)" }}
-            >
-              {insight}
-            </p>
-          ))}
-        </div>
+        <p
+          className="text-sm leading-relaxed text-white pl-3 border-l-2 border-white/40"
+          style={{ textShadow: "0 1px 8px rgba(0,0,0,0.9), 0 0 20px rgba(0,0,0,0.7)", fontSize: "clamp(0.82rem, 1.5vw, 1rem)" }}
+        >
+          {extras[0]}
+        </p>
       )}
 
     </div>
