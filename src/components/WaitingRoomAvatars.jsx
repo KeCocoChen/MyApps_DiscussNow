@@ -1,11 +1,11 @@
 // Small round profile avatars shown near the article — no names, no labels
 const ANIMAL_IMAGES = [
-  { url: "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=120&h=120&fit=crop&crop=face", name: "Doge" },
-  { url: "https://images.unsplash.com/photo-1574158622682-e40e69881006?w=120&h=120&fit=crop&crop=face", name: "Grumpy" },
-  { url: "https://images.unsplash.com/photo-1474511320723-9a56873867b5?w=120&h=120&fit=crop&crop=face", name: "Sly Fox" },
-  { url: "https://images.unsplash.com/photo-1425082661705-1834bfd09dca?w=120&h=120&fit=crop&crop=face", name: "Hamster" },
-  { url: "https://images.unsplash.com/photo-1490718720478-364a07a997cd?w=120&h=120&fit=crop&crop=face", name: "Wise Owl" },
-  { url: "https://images.unsplash.com/photo-1568572933382-74d440642117?w=120&h=120&fit=crop&crop=face", name: "Corgi" },
+  { url: "https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif",        name: "Blinking Cat" },
+  { url: "https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif",   name: "Golden Pup" },
+  { url: "https://media.giphy.com/media/oCjCjgplMHDVi/giphy.gif",        name: "Curious Fox" },
+  { url: "https://media.giphy.com/media/VbEloWwOz3QqYBsqIZ/giphy.gif",   name: "Hamster" },
+  { url: "https://media.giphy.com/media/26ufjzujCjKIjPt4A/giphy.gif",    name: "Wise Owl" },
+  { url: "https://media.giphy.com/media/RQSuZfuylVNAY/giphy.gif",        name: "Baby Bear" },
 ];
 
 const AI_DEFAULTS = [

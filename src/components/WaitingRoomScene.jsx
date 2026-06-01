@@ -1,14 +1,17 @@
 import { useRef, useState } from "react";
+import { motion } from "framer-motion";
 import { Sparkles, Music2, VolumeX } from "lucide-react";
 import SessionTimer from "./SessionTimer";
 
 const ANIMAL_IMAGES = [
-  { url: "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=220&h=220&fit=crop&crop=face", name: "Doge" },
-  { url: "https://images.unsplash.com/photo-1574158622682-e40e69881006?w=220&h=220&fit=crop&crop=face", name: "Grumpy" },
-  { url: "https://images.unsplash.com/photo-1474511320723-9a56873867b5?w=220&h=220&fit=crop&crop=face", name: "Sly Fox" },
-  { url: "https://images.unsplash.com/photo-1425082661705-1834bfd09dca?w=220&h=220&fit=crop&crop=face", name: "Hamster" },
-  { url: "https://images.unsplash.com/photo-1490718720478-364a07a997cd?w=220&h=220&fit=crop&crop=face", name: "Wise Owl" },
-  { url: "https://images.unsplash.com/photo-1568572933382-74d440642117?w=220&h=220&fit=crop&crop=face", name: "Corgi" },
+  { url: "https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif",        name: "Blinking Cat",  delay: 0 },
+  { url: "https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif",   name: "Golden Pup",   delay: 0.3 },
+  { url: "https://media.giphy.com/media/oCjCjgplMHDVi/giphy.gif",        name: "Curious Fox",  delay: 0.6 },
+  { url: "https://media.giphy.com/media/VbEloWwOz3QqYBsqIZ/giphy.gif",   name: "Hamster",     delay: 0.9 },
+  { url: "https://media.giphy.com/media/26ufjzujCjKIjPt4A/giphy.gif",    name: "Wise Owl",    delay: 0.2 },
+  { url: "https://media.giphy.com/media/RQSuZfuylVNAY/giphy.gif",        name: "Baby Bear",   delay: 0.5 },
+  { url: "https://media.giphy.com/media/lJnAXeAmrqF3OPuCs0/giphy.gif",   name: "Parrot",      delay: 0.8 },
+  { url: "https://media.giphy.com/media/ICOgUNjpvO0PC/giphy.gif",        name: "Bunny",       delay: 0.1 },
 ];
 
 const AI_DEFAULTS = [
@@ -58,8 +61,8 @@ export default function WaitingRoomScene({ participants = [], piece, extras = []
       {/* Header row */}
       <div className="flex items-start justify-between gap-3 flex-wrap">
         <div>
-          <p className="text-[11px] uppercase tracking-widest font-semibold text-muted-foreground">Waiting Room</p>
-          <p className="text-sm font-medium text-foreground">
+          <p className="text-[11px] uppercase tracking-widest font-semibold text-white/60" style={{ textShadow: "0 1px 4px rgba(0,0,0,0.8)" }}>Waiting Room</p>
+          <p className="text-sm font-medium text-white" style={{ textShadow: "0 1px 6px rgba(0,0,0,0.9)" }}>
             Discussion in <SessionTimer format="mins" />
           </p>
         </div>
@@ -67,7 +70,8 @@ export default function WaitingRoomScene({ participants = [], piece, extras = []
           {/* Music toggle */}
           <button
             onClick={toggleMusic}
-            className="flex items-center gap-1.5 text-[11px] text-muted-foreground hover:text-foreground transition-colors"
+            className="flex items-center gap-1.5 text-[11px] text-white/70 hover:text-white transition-colors"
+            style={{ textShadow: "0 1px 4px rgba(0,0,0,0.8)" }}
           >
             {playing
               ? <Music2 className="w-3.5 h-3.5 text-primary animate-pulse" />
@@ -76,6 +80,30 @@ export default function WaitingRoomScene({ participants = [], piece, extras = []
           </button>
           <audio ref={audioRef} src={MUSIC_SRC} loop preload="none" />
         </div>
+      </div>
+
+      {/* Animated participant avatars */}
+      <div className="flex items-end gap-4 py-2">
+        {allAvatars.map((p, i) => {
+          const animal = ANIMAL_IMAGES[i % ANIMAL_IMAGES.length];
+          const imgSrc = (p.is_ai || !p.avatar_url) ? animal.url : p.avatar_url;
+          const displayName = p.is_ai ? animal.name : (p.display_name || "Guest").split(" ")[0];
+          const tag = GOAL_TAGS[p.goal] || (p.is_ai ? "AI" : "Thinker");
+          return (
+            <motion.div
+              key={p.id || p.display_name || i}
+              className="flex flex-col items-center gap-1"
+              animate={{ y: [0, -7, 0] }}
+              transition={{ duration: 2.2 + i * 0.3, repeat: Infinity, ease: "easeInOut", delay: animal.delay }}
+            >
+              <p className="text-[10px] font-bold text-white leading-none" style={{ textShadow: "0 1px 6px rgba(0,0,0,1)" }}>{displayName}</p>
+              <span className="text-[8px] px-1.5 py-0.5 rounded-full bg-black/50 text-white/95 backdrop-blur-sm leading-none">{tag}</span>
+              <div className="w-16 h-16 rounded-full overflow-hidden shadow-xl border-2 border-white/60">
+                <img src={imgSrc} alt={displayName} className="w-full h-full object-cover" onError={(e) => { e.target.src = animal.url; }} />
+              </div>
+            </motion.div>
+          );
+        })}
       </div>
 
       {/* Tell me more button */}
@@ -92,9 +120,13 @@ export default function WaitingRoomScene({ participants = [], piece, extras = []
 
       {/* LLM extras */}
       {extras.length > 0 && (
-        <div className="space-y-2">
+        <div className="space-y-3">
           {extras.map((insight, i) => (
-            <p key={i} className="text-xs text-foreground/65 leading-relaxed italic pl-3 border-l-2 border-foreground/10">
+            <p
+              key={i}
+              className="text-sm leading-relaxed text-white pl-3 border-l-2 border-white/40"
+              style={{ textShadow: "0 1px 8px rgba(0,0,0,0.9), 0 0 20px rgba(0,0,0,0.7)", fontSize: "clamp(0.82rem, 1.5vw, 1rem)" }}
+            >
               {insight}
             </p>
           ))}

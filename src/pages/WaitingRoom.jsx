@@ -2,7 +2,7 @@ import { useMemo, useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import WaitingRoomScene from "../components/WaitingRoomScene";
-import WaitingRoomQuotes from "../components/WaitingRoomQuotes";
+
 
 const BG_URL = "https://media.base44.com/images/public/6a1d1f0b92a437a5210e58cc/2bc8c55be_IMG_2444.png";
 
@@ -80,7 +80,6 @@ export default function WaitingRoom() {
           isExploring={isExploring}
         />
 
-        <WaitingRoomQuotes />
 
         {!sessionReady && (
           <div className="text-center py-2">
