@@ -108,25 +108,30 @@ export default function Home() {
               <p className="text-lg text-muted-foreground">Preparing the next piece...</p>
             </div>
           )}
-          <WaitingRoomAvatars participants={participants} />
       </>
 
 
 
       {/* Main CTA */}
-      <div className="border-t border-b border-foreground/10 py-5 flex items-center justify-between">
-        <div>
-          <p className="text-xs uppercase tracking-widest text-muted-foreground font-medium mb-0.5">Join the conversation</p>
-          <p className="text-sm text-foreground/70">New session every 30 minutes</p>
+      <div className="border-t border-b border-foreground/10 py-5 space-y-4">
+        <div className="flex items-center gap-3">
+          <WaitingRoomAvatars participants={participants} />
+          <p className="text-sm text-foreground/80">
+            <span className="font-semibold text-foreground">{Math.max(participants.length, 2)} people</span> are in the waiting room ready to discuss with you in{" "}
+            <span className="font-semibold text-foreground"><SessionTimer format="mins" /></span>!
+          </p>
         </div>
-        <Button
-          onClick={() => setShowQ(true)}
-          className="gap-2 rounded-none px-6 h-10 text-sm font-semibold"
-          disabled={joinMutation.isPending}
-        >
-          {joinMutation.isPending ? "Joining..." : "Join"}
-          <ArrowRight className="w-4 h-4" />
-        </Button>
+        <div className="flex items-center justify-between">
+          <p className="text-xs uppercase tracking-widest text-muted-foreground font-medium">Join the conversation</p>
+          <Button
+            onClick={() => setShowQ(true)}
+            className="gap-2 rounded-none px-6 h-10 text-sm font-semibold"
+            disabled={joinMutation.isPending}
+          >
+            {joinMutation.isPending ? "Joining..." : "Join"}
+            <ArrowRight className="w-4 h-4" />
+          </Button>
+        </div>
       </div>
 
       <WaitingRoomQuotes />
