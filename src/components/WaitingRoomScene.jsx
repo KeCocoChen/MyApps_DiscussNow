@@ -1,7 +1,6 @@
 import { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Sparkles, Music2, VolumeX } from "lucide-react";
-import SessionTimer from "./SessionTimer";
 
 const ANIMAL_IMAGES = [
   { url: "https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif",        name: "Blinking Cat",  delay: 0 },
@@ -59,13 +58,7 @@ export default function WaitingRoomScene({ participants = [], piece, extras = []
   return (
     <div className="space-y-3">
       {/* Header row */}
-      <div className="flex items-start justify-between gap-3 flex-wrap">
-        <div>
-          <p className="text-[11px] uppercase tracking-widest font-semibold text-white/60" style={{ textShadow: "0 1px 4px rgba(0,0,0,0.8)" }}>Waiting Room</p>
-          <p className="text-sm font-medium text-white" style={{ textShadow: "0 1px 6px rgba(0,0,0,0.9)" }}>
-            Discussion in <SessionTimer format="mins" />
-          </p>
-        </div>
+      <div className="flex items-start justify-end gap-3 flex-wrap">        
         <div className="flex items-center gap-2">
           {/* Music toggle */}
           <button
