@@ -5,15 +5,17 @@ function getMinsLeft() {
   return Math.max(1, Math.ceil((Math.ceil(Date.now() / interval) * interval - Date.now()) / 60000));
 }
 
+const ANIMAL_EMOJIS = ["🦊", "🐺", "🦁", "🐻", "🦋", "🦚", "🐬", "🦉"];
+
 const AI_DEFAULTS = [
-  { display_name: "Sage (AI)", color: "bg-emerald-100 text-emerald-700", is_ai: true },
-  { display_name: "Nova (AI)", color: "bg-violet-100 text-violet-700", is_ai: true },
+  { display_name: "Sage (AI)", is_ai: true },
+  { display_name: "Nova (AI)", is_ai: true },
 ];
 
 
 
-function getInitials(name = "") {
-  return name.replace(" (AI)", "").slice(0, 2).toUpperCase();
+function getAnimalEmoji(index) {
+  return ANIMAL_EMOJIS[index % ANIMAL_EMOJIS.length];
 }
 
 export default function WaitingRoomAvatars({ participants = [] }) {
@@ -47,13 +49,15 @@ export default function WaitingRoomAvatars({ participants = [] }) {
         {visible.map((p, i) => (
           <div
             key={p.id || p.display_name || i}
-            className={`w-10 h-10 rounded-full border-2 border-white flex items-center justify-center text-xs font-bold shadow-sm ${i > 0 ? "-ml-3" : ""} ${p.is_ai ? "bg-black text-white" : "bg-stone-200 text-stone-800"}`}
+            className={`w-10 h-10 rounded-full border-2 border-white flex items-center justify-center shadow-sm ${i > 0 ? "-ml-3" : ""} ${p.is_ai ? "bg-stone-100 text-lg" : "bg-stone-200 text-xs font-bold text-stone-800"}`}
             title={p.display_name}
           >
             {p.avatar_url ? (
               <img src={p.avatar_url} alt={p.display_name} className="w-full h-full object-cover rounded-full" />
+            ) : p.is_ai ? (
+              getAnimalEmoji(i)
             ) : (
-              getInitials(p.display_name || "?")
+              (p.display_name || "?").slice(0, 2).toUpperCase()
             )}
           </div>
         ))}

@@ -9,7 +9,7 @@ export default function Layout() {
       <header className="border-b border-border/60 bg-card/80 backdrop-blur-sm sticky top-0 z-50">
         <div className="max-w-3xl mx-auto px-4 h-14 flex items-center justify-between">
           <Link to="/" className="font-display text-lg font-semibold tracking-tight">
-            discuss<span className="text-primary">_now</span>
+            Discuss Now
           </Link>
           <nav className="flex items-center gap-1">
             <Link
