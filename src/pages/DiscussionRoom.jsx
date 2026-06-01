@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Send, ArrowLeft, MessageCircle } from "lucide-react";
+import { Send, ArrowLeft, MessageCircle, Mic, MicOff } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import ChatBubble from "../components/ChatBubble";
 import ParticipantList from "../components/ParticipantList";
@@ -23,10 +23,59 @@ export default function DiscussionRoom() {
   const [supportMode, setSupportMode] = useState(false);
   const boostedSessionRef = useRef(null);
   const supportAddedRef = useRef(false);
+  const [isListening, setIsListening] = useState(false);
+  const recognitionRef = useRef(null);
+  const silenceTimerRef = useRef(null);
+  const autoAiTriggeredRef = useRef(false);
 
   useEffect(() => {
     base44.auth.me().then(setUser);
   }, []);
+
+  // Auto-trigger AI if user is silent for 40 seconds and no messages yet
+  useEffect(() => {
+    if (!sessionId || !user || autoAiTriggeredRef.current) return;
+    silenceTimerRef.current = setTimeout(async () => {
+      if (autoAiTriggeredRef.current) return;
+      autoAiTriggeredRef.current = true;
+      const existing = await base44.entities.ChatMessage.filter({ session_id: sessionId }, 'created_date', 1);
+      if (existing.length === 0) {
+        await base44.functions.invoke('aiChat', {
+          sessionId,
+          userMessage: "(opening the discussion)",
+          userName: "System",
+          contentTitle: "",
+          contentDesc: "",
+          messageCount: 0,
+        });
+        queryClient.invalidateQueries({ queryKey: ['messages', sessionId] });
+      }
+    }, 40000);
+    return () => clearTimeout(silenceTimerRef.current);
+  }, [sessionId, user]);
+
+  const startVoice = () => {
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) return;
+    const rec = new SR();
+    rec.lang = 'en-US';
+    rec.interimResults = false;
+    rec.onresult = (e) => {
+      const transcript = e.results[0][0].transcript;
+      setMessage(transcript);
+      setIsListening(false);
+    };
+    rec.onend = () => setIsListening(false);
+    rec.onerror = () => setIsListening(false);
+    rec.start();
+    recognitionRef.current = rec;
+    setIsListening(true);
+  };
+
+  const stopVoice = () => {
+    recognitionRef.current?.stop();
+    setIsListening(false);
+  };
 
   const { data: messages = [] } = useQuery({
     queryKey: ["messages", sessionId],
@@ -257,10 +306,18 @@ Consider: Does the written text justify the choices? Is it specific or vague? Do
         {/* Input */}
         <div className="border-t border-border/60 p-4 bg-card/50 backdrop-blur-sm">
           <div className="flex gap-2 max-w-3xl mx-auto">
+            <Button
+              size="icon"
+              variant={isListening ? "destructive" : "outline"}
+              onClick={isListening ? stopVoice : startVoice}
+              title={isListening ? "Stop listening" : "Speak"}
+            >
+              {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+            </Button>
             <Input
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              placeholder="Share your thoughts..."
+              placeholder={isListening ? "Listening..." : "Share your thoughts..."}
               onKeyDown={(e) =>
                 e.key === "Enter" && !e.shiftKey && handleSend()
               }

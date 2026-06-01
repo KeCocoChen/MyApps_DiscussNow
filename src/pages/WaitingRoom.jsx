@@ -96,8 +96,14 @@ export default function WaitingRoom() {
         )}
 
         {sessionReady && (
-          <div className="text-center py-2 border-t border-white/20">
-            <p className="text-sm font-semibold text-white">The discussion is live — listen in.</p>
+          <div className="text-center py-3 border-t border-white/20 space-y-3">
+            <p className="text-sm font-semibold text-white">The discussion is live — join in!</p>
+            <button
+              onClick={() => navigate(`/room?session=${sessionIndex}`)}
+              className="px-6 py-3 rounded-full bg-primary text-primary-foreground font-semibold text-sm hover:opacity-90 active:scale-95 transition-all shadow-lg"
+            >
+              Enter Discussion →
+            </button>
           </div>
         )}
 
