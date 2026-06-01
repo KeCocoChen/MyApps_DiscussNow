@@ -8,9 +8,8 @@ export default function Layout() {
     <div className="min-h-screen bg-background">
       <header className="border-b border-border/60 bg-card/80 backdrop-blur-sm sticky top-0 z-50">
         <div className="max-w-3xl mx-auto px-4 h-14 flex items-center justify-between">
-          <Link to="/" className="font-display text-lg font-semibold tracking-tight flex items-baseline gap-2">
+          <Link to="/" className="font-display text-lg font-semibold tracking-tight">
             Discuss Now
-            <span className="text-[10px] font-mono text-muted-foreground font-normal tracking-widest">v1.1.2</span>
           </Link>
           <nav className="flex items-center gap-1">
             <Link
