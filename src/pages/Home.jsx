@@ -8,7 +8,6 @@ import ContentDisplay from "../components/ContentDisplay";
 import WaitingRoomAvatars from "../components/WaitingRoomAvatars";
 import WaitingRoomQuotes from "../components/WaitingRoomQuotes";
 import WaitingRoomScene from "../components/WaitingRoomScene";
-
 import SessionTimer from "../components/SessionTimer";
 import JoinQuestionnaire from "../components/JoinQuestionnaire";
 
@@ -20,6 +19,7 @@ function getSessionIndex() {
 
 export default function Home() {
   const [showQ, setShowQ] = useState(false);
+  const [view, setView] = useState("article");
   const [extras, setExtras] = useState([]);
   const [isExploring, setIsExploring] = useState(false);
   const navigate = useNavigate();
@@ -68,8 +68,6 @@ export default function Home() {
     joinMutation.mutate(answers);
   };
 
-  const realCount = participants.filter((p) => !p.is_ai).length;
-
   const handleExplore = async () => {
     if (!currentPiece || isExploring || extras.length >= 5) return;
     setIsExploring(true);
@@ -83,18 +81,31 @@ export default function Home() {
 
   return (
     <div className="max-w-2xl mx-auto px-4 pt-8 pb-16 space-y-8">
-      {/* WSJ-style top header */}
-      <div className="flex items-start justify-between border-b border-foreground/15 pb-4">
-        {/* Left: people + timer stacked */}
-        <div className="space-y-0.5">
-          <p className="text-sm font-semibold text-foreground">
-            {Math.max(participants.length, 2)} people in the waiting room
-          </p>
-          <p className="text-xs text-muted-foreground">
-            Next discussion in <SessionTimer format="mins" />
-          </p>
+
+      {/* Tab switcher + countdown */}
+      <div className="flex items-center justify-between border-b border-foreground/15 pb-4">
+        <div className="flex gap-1">
+          <button
+            onClick={() => setView("article")}
+            className={`text-sm font-semibold px-3 py-1 rounded-full transition-colors ${
+              view === "article"
+                ? "bg-foreground text-background"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            Article
+          </button>
+          <button
+            onClick={() => setView("waiting")}
+            className={`text-sm font-semibold px-3 py-1 rounded-full transition-colors ${
+              view === "waiting"
+                ? "bg-foreground text-background"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            Waiting Room
+          </button>
         </div>
-        {/* Right: prominent countdown */}
         <div className="text-right">
           <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-medium">Next drop</p>
           <p className="text-xl font-semibold text-foreground leading-tight">
@@ -103,40 +114,37 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Content */}
-      {isLoading ? (
-        <div className="flex justify-center py-20">
-          <div className="w-6 h-6 border-2 border-muted border-t-primary rounded-full animate-spin" />
-        </div>
-      ) : currentPiece ? (
-        <ContentDisplay piece={currentPiece} />
-      ) : (
-        <div className="text-center py-20 space-y-3">
-          <Sparkles className="w-8 h-8 mx-auto text-primary/40" />
-          <p className="text-lg text-muted-foreground">
-            Preparing the next piece...
-          </p>
-          <p className="text-sm text-muted-foreground/70">
-            Something interesting is coming your way.
-          </p>
-        </div>
+      {/* Article view */}
+      {view === "article" && (
+        <>
+          {isLoading ? (
+            <div className="flex justify-center py-20">
+              <div className="w-6 h-6 border-2 border-muted border-t-primary rounded-full animate-spin" />
+            </div>
+          ) : currentPiece ? (
+            <ContentDisplay piece={currentPiece} />
+          ) : (
+            <div className="text-center py-20 space-y-3">
+              <Sparkles className="w-8 h-8 mx-auto text-primary/40" />
+              <p className="text-lg text-muted-foreground">Preparing the next piece...</p>
+            </div>
+          )}
+          <WaitingRoomAvatars participants={participants} />
+        </>
       )}
 
+      {/* Waiting room view */}
+      {view === "waiting" && (
+        <WaitingRoomScene
+          participants={participants}
+          piece={currentPiece}
+          extras={extras}
+          onExplore={currentPiece && extras.length < 5 ? handleExplore : null}
+          isExploring={isExploring}
+        />
+      )}
 
-
-      {/* Small round avatars near article */}
-      <WaitingRoomAvatars participants={participants} />
-
-      {/* Living room waiting room scene */}
-      <WaitingRoomScene
-        participants={participants}
-        piece={currentPiece}
-        extras={extras}
-        onExplore={currentPiece && extras.length < 5 ? handleExplore : null}
-        isExploring={isExploring}
-      />
-
-      {/* Main CTA — WSJ style */}
+      {/* Main CTA */}
       <div className="border-t border-b border-foreground/10 py-5 flex items-center justify-between">
         <div>
           <p className="text-xs uppercase tracking-widest text-muted-foreground font-medium mb-0.5">Join the conversation</p>
@@ -152,7 +160,6 @@ export default function Home() {
         </Button>
       </div>
 
-      {/* Waiting room quote */}
       <WaitingRoomQuotes />
 
       <JoinQuestionnaire
