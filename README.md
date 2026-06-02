@@ -1,3 +1,7 @@
+**This is for investors/recruiters/future managers to view, not for others to copy to sell or claim being their ideas!!!** 
+
+**Author: Ke Chen. With the help of Base44.** 
+
 **Welcome to your Base44 project** 
 
 **About**
