@@ -1,15 +1,11 @@
 import { motion } from "framer-motion";
 
-// GIPHY stickers — true transparent backgrounds
+// GIPHY stickers — real photo animals, moving GIFs, transparent/no background
 const ANIMALS = [
-  { gif: "https://media2.giphy.com/media/bnzH3tEHjdDuU/giphy.gif",                          name: "Cat",    delay: 0   },
-  { gif: "https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif",                      name: "Pup",    delay: 0.3 },
-  { gif: "https://media.giphy.com/media/Wf9dyOrB0nGJn5FIYf/giphy.gif",                      name: "Bear",   delay: 0.6 },
-  { gif: "https://media.giphy.com/media/ICOgUNjpvO0PC/giphy.gif",                            name: "Bunny",  delay: 0.9 },
-  { gif: "https://media.giphy.com/media/VbEloWwOz3QqYBsqIZ/giphy.gif",                      name: "Hamster",delay: 0.2 },
-  { gif: "https://media.giphy.com/media/lJnAXeAmrqF3OPuCs0/giphy.gif",                      name: "Parrot", delay: 0.5 },
-  { gif: "https://media.giphy.com/media/26ufjzujCjKIjPt4A/giphy.gif",                       name: "Owl",    delay: 0.8 },
-  { gif: "https://media.giphy.com/media/RQSuZfuylVNAY/giphy.gif",                           name: "Cub",    delay: 0.1 },
+  { gif: "https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif",       name: "Cat",    delay: 0   },
+  { gif: "https://media.giphy.com/media/bnzH3tEHjdDuU/giphy.gif",       name: "Kitten", delay: 0.3 },
+  { gif: "https://media.giphy.com/media/ICOgUNjpvO0PC/giphy.gif",       name: "Bunny",  delay: 0.6 },
+  { gif: "https://media.giphy.com/media/VbEloWwOz3QqYBsqIZ/giphy.gif",  name: "Hamster",delay: 0.9 },
 ];
 
 // Positions — subtle depth via size difference, but kept close so cats feel like same world
