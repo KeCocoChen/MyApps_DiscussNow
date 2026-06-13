@@ -8,12 +8,12 @@ const ANIMALS = [
   { gif: "https://media3.giphy.com/media/Wf9dyOrB0nGJn5FIYf/giphy.gif",  name: "Luna",   delay: 0.9 },
 ];
 
-// Positions — varied depths like the TikTok cats: one big in foreground, others mid/background
+// Positions — subtle depth via size difference, but kept close so cats feel like same world
 const SEATS = [
-  { bottom: "5%",  left: "3%",  size: 200 },   // foreground left — large, like "Mother" cat
-  { bottom: "18%", left: "35%", size: 160 },   // mid-ground center — like "Father" cat
-  { bottom: "20%", left: "58%", size: 120 },   // mid-ground right — like "Baby" cat
-  { bottom: "8%",  left: "72%", size: 90  },   // background far right
+  { bottom: "4%",  left: "2%",  size: 150 },
+  { bottom: "6%",  left: "30%", size: 140 },
+  { bottom: "5%",  left: "57%", size: 135 },
+  { bottom: "4%",  left: "76%", size: 130 },
 ];
 
 const AI_DEFAULTS = [
@@ -43,8 +43,8 @@ export default function AnimalOverlay({ participants = [] }) {
             key={p.id || p.display_name || i}
             className="absolute flex flex-col items-center"
             style={{ bottom: seat.bottom, left: seat.left }}
-            animate={{ y: [0, -8, 0] }}
-            transition={{ duration: 2.8 + i * 0.4, repeat: Infinity, ease: "easeInOut", delay: animal.delay }}
+            animate={{ y: [0, -6, 0] }}
+            transition={{ duration: 3.0, repeat: Infinity, ease: "easeInOut", delay: animal.delay }}
           >
             {/* Name tag — bold label style like the TikTok cat meme */}
             <span
@@ -63,7 +63,7 @@ export default function AnimalOverlay({ participants = [] }) {
                   width: seat.size,
                   height: seat.size,
                   objectFit: "contain",
-                  filter: "drop-shadow(0 6px 16px rgba(0,0,0,0.4))",
+                  filter: "drop-shadow(0 6px 18px rgba(0,0,0,0.45)) sepia(0.15) saturate(1.1)",
                 }}
                 onError={(e) => { e.target.src = ANIMALS[0].gif; }}
               />
