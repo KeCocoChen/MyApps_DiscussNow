@@ -6,7 +6,7 @@ import WaitingRoomScene from "../components/WaitingRoomScene";
 import AnimalOverlay from "../components/AnimalOverlay";
 
 
-const BG_URL = "https://media.base44.com/images/public/6a1d1f0b92a437a5210e58cc/2bc8c55be_IMG_2444.png";
+const BG_URL = "https://media.base44.com/images/public/6a1d1f0b92a437a5210e58cc/87ed5f426_gif_background_night.gif";
 
 const SESSION_INTERVAL = 30 * 60 * 1000;
 function getSessionIndex() {
@@ -70,8 +70,8 @@ export default function WaitingRoom() {
         className="fixed inset-0 w-full h-full bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: `url(${BG_URL})` }}
       />
-      {/* Dark gradient overlay for readability */}
-      <div className="fixed inset-0 bg-gradient-to-b from-black/20 via-black/10 to-black/60" />
+      {/* Dark gradient overlay — heavier at top to hide GIF's social media UI */}
+      <div className="fixed inset-0 bg-gradient-to-b from-black/80 via-black/10 to-black/50" />
 
       {/* Animals sitting in the room */}
       <AnimalOverlay participants={participants} />
