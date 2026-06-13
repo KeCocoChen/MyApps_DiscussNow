@@ -65,13 +65,15 @@ export default function WaitingRoom() {
 
   return (
     <div className="relative min-h-screen w-full overflow-hidden">
-      {/* Immersive background */}
-      <div
-        className="fixed inset-0 w-full h-full bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: `url(${BG_URL})` }}
+      {/* Immersive background — use <img> so the GIF actually animates */}
+      <img
+        src={BG_URL}
+        alt=""
+        className="fixed inset-0 w-full h-full object-cover"
+        style={{ zIndex: 0 }}
       />
       {/* Dark gradient overlay — heavier at top to hide GIF's social media UI */}
-      <div className="fixed inset-0 bg-gradient-to-b from-black/80 via-black/10 to-black/50" />
+      <div className="fixed inset-0 bg-gradient-to-b from-black/80 via-black/10 to-black/50" style={{ zIndex: 1 }} />
 
       {/* Animals sitting in the room */}
       <AnimalOverlay participants={participants} />
