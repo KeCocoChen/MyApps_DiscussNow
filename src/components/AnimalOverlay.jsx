@@ -52,8 +52,8 @@ export default function AnimalOverlay({ participants = [] }) {
           >
             {/* Name tag — bold label style like the TikTok cat meme */}
             <span
-              className="text-sm font-black text-foreground mb-1 px-2 py-0.5 rounded bg-white/90"
-              style={{ fontFamily: "Georgia, serif", letterSpacing: "0.02em" }}
+              className="text-sm font-black text-white mb-1"
+              style={{ fontFamily: "Georgia, serif", letterSpacing: "0.02em", textShadow: "0 1px 6px rgba(0,0,0,0.8)" }}
             >
               {useAnimal ? animal.name : (p.display_name || "Guest").split(" ")[0]}
             </span>
