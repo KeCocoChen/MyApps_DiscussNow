@@ -1,11 +1,11 @@
 import { motion } from "framer-motion";
 
-// Cats/animals with pure white backgrounds — mix-blend-mode multiply removes the bg so they sit in the room
+// GIPHY stickers — these have true transparent backgrounds (no blend mode needed)
 const ANIMALS = [
-  { gif: "https://media.giphy.com/media/vFKqnCdLPNOKc/giphy.gif",        name: "Cat",         delay: 0   },
-  { gif: "https://media.giphy.com/media/BzyTuYCmvSORqs1ABM/giphy.gif",   name: "Kitten",      delay: 0.3 },
-  { gif: "https://media.giphy.com/media/mlvseq9yvZhba/giphy.gif",        name: "Kitty",       delay: 0.6 },
-  { gif: "https://media.giphy.com/media/jpbnoe3UIa8TU8LM13/giphy.gif",   name: "Paw",         delay: 0.9 },
+  { gif: "https://media4.giphy.com/media/BXjqytvu9bKzCUHdzz/200w.gif",   name: "Cat",    delay: 0   },
+  { gif: "https://media1.giphy.com/media/9K6CebIaqQmAMxJcJQ/giphy.gif",  name: "Kitten", delay: 0.3 },
+  { gif: "https://media2.giphy.com/media/bnzH3tEHjdDuU/giphy.gif",       name: "Kitty",  delay: 0.6 },
+  { gif: "https://media3.giphy.com/media/Wf9dyOrB0nGJn5FIYf/giphy.gif",  name: "Luna",   delay: 0.9 },
 ];
 
 // Positions — varied depths like the TikTok cats: one big in foreground, others mid/background
@@ -63,8 +63,7 @@ export default function AnimalOverlay({ participants = [] }) {
                   width: seat.size,
                   height: seat.size,
                   objectFit: "contain",
-                  mixBlendMode: "multiply",
-                  filter: "drop-shadow(0 4px 12px rgba(0,0,0,0.5))",
+                  filter: "drop-shadow(0 6px 16px rgba(0,0,0,0.4))",
                 }}
                 onError={(e) => { e.target.src = ANIMALS[0].gif; }}
               />
