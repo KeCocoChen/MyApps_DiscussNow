@@ -30,7 +30,7 @@ const GOAL_TAGS = {
 // Gentle, dreamy piano solo - perfect for calm atmosphere
 const MUSIC_SRC = "https://cdn.pixabay.com/audio/2022/05/27/audio_18f2e17f6f.mp3";
 
-export default function WaitingRoomScene({ participants = [], piece, extras = [], onExplore, isExploring }) {
+export default function WaitingRoomScene({ participants = [], piece, extras = [], onExplore, isExploring, onDismissExtra }) {
   const [playing, setPlaying] = useState(true);
   const audioRef = useRef(null);
 
@@ -98,12 +98,19 @@ export default function WaitingRoomScene({ participants = [], piece, extras = []
 
       {/* LLM extra — shows only the latest insight */}
       {extras.length > 0 && (
-        <p
-          className="text-sm leading-relaxed text-white pl-3 border-l-2 border-white/40"
-          style={{ textShadow: "0 1px 8px rgba(0,0,0,0.9), 0 0 20px rgba(0,0,0,0.7)", fontSize: "clamp(0.82rem, 1.5vw, 1rem)" }}
-        >
-          {extras[0]}
-        </p>
+        <div className="relative pl-3 border-l-2 border-white/40">
+          <button
+            onClick={onDismissExtra}
+            className="absolute -top-1 -right-1 text-white/50 hover:text-white text-xs leading-none"
+            title="Dismiss"
+          >✕</button>
+          <p
+            className="text-sm leading-relaxed text-white pr-4"
+            style={{ textShadow: "0 1px 8px rgba(0,0,0,0.9), 0 0 20px rgba(0,0,0,0.7)", fontSize: "clamp(0.82rem, 1.5vw, 1rem)" }}
+          >
+            {extras[0]}
+          </p>
+        </div>
       )}
 
     </div>

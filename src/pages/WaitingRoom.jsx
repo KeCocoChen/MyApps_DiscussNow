@@ -6,7 +6,7 @@ import WaitingRoomScene from "../components/WaitingRoomScene";
 import AnimalOverlay from "../components/AnimalOverlay";
 
 
-const BG_URL = "https://media.base44.com/images/public/6a1d1f0b92a437a5210e58cc/d3e9d2f6c_gif_background_day.gif";
+const BG_URL = "https://media.base44.com/images/public/6a1d1f0b92a437a5210e58cc/87ed5f426_gif_background_night.gif";
 
 const SESSION_INTERVAL = 30 * 60 * 1000;
 function getSessionIndex() {
@@ -86,6 +86,7 @@ export default function WaitingRoom() {
           extras={extras}
           onExplore={currentPiece && extras.length < 5 ? handleExplore : null}
           isExploring={isExploring}
+          onDismissExtra={() => setExtras([])}
         />
 
 
