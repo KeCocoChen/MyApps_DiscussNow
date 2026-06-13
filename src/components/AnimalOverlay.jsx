@@ -1,20 +1,19 @@
 import { motion } from "framer-motion";
 
-// Popular animals with white/light backgrounds — mix-blend-mode multiply removes the bg
+// Cats/animals with pure white backgrounds — mix-blend-mode multiply removes the bg so they sit in the room
 const ANIMALS = [
-  { gif: "https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif",        name: "Cat",         delay: 0   },
-  { gif: "https://media.giphy.com/media/3oKIPnAiaMCws8nOsE/giphy.gif",   name: "Golden",      delay: 0.4 },
-  { gif: "https://media.giphy.com/media/ICOgUNjpvO0PC/giphy.gif",        name: "Bunny",       delay: 0.8 },
-  { gif: "https://media.giphy.com/media/xT0GqtpF1NWd9HHHzm/giphy.gif",   name: "Puppy",       delay: 0.2 },
+  { gif: "https://media.giphy.com/media/vFKqnCdLPNOKc/giphy.gif",        name: "Cat",         delay: 0   },
+  { gif: "https://media.giphy.com/media/BzyTuYCmvSORqs1ABM/giphy.gif",   name: "Kitten",      delay: 0.3 },
+  { gif: "https://media.giphy.com/media/mlvseq9yvZhba/giphy.gif",        name: "Kitty",       delay: 0.6 },
+  { gif: "https://media.giphy.com/media/jpbnoe3UIa8TU8LM13/giphy.gif",   name: "Paw",         delay: 0.9 },
 ];
 
-// Positions on screen that correspond to where furniture would be in a cozy living room/cabin
-// Adjust bottom/left values to suit the background image layout
+// Positions — varied depths like the TikTok cats: one big in foreground, others mid/background
 const SEATS = [
-  { bottom: "18%", left: "5%",  size: 120 },   // left side of couch
-  { bottom: "22%", left: "40%", size: 130 },   // center couch
-  { bottom: "10%", left: "62%", size: 110 },   // carpet / floor right
-  { bottom: "8%",  left: "20%", size: 100 },   // floor left
+  { bottom: "5%",  left: "3%",  size: 200 },   // foreground left — large, like "Mother" cat
+  { bottom: "18%", left: "35%", size: 160 },   // mid-ground center — like "Father" cat
+  { bottom: "20%", left: "58%", size: 120 },   // mid-ground right — like "Baby" cat
+  { bottom: "8%",  left: "72%", size: 90  },   // background far right
 ];
 
 const AI_DEFAULTS = [
@@ -47,10 +46,10 @@ export default function AnimalOverlay({ participants = [] }) {
             animate={{ y: [0, -8, 0] }}
             transition={{ duration: 2.8 + i * 0.4, repeat: Infinity, ease: "easeInOut", delay: animal.delay }}
           >
-            {/* Name tag */}
+            {/* Name tag — bold label style like the TikTok cat meme */}
             <span
-              className="text-[10px] font-bold text-white mb-1 px-1.5 py-0.5 rounded bg-black/40 backdrop-blur-sm"
-              style={{ textShadow: "0 1px 4px rgba(0,0,0,1)" }}
+              className="text-sm font-black text-foreground mb-1 px-2 py-0.5 rounded bg-white/90"
+              style={{ fontFamily: "Georgia, serif", letterSpacing: "0.02em" }}
             >
               {useAnimal ? animal.name : (p.display_name || "Guest").split(" ")[0]}
             </span>
