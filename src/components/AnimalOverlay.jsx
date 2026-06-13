@@ -1,15 +1,15 @@
 import { motion } from "framer-motion";
 
-// GIPHY stickers — true transparent backgrounds
+// Real animal PNGs with transparent backgrounds
 const ANIMALS = [
-  { gif: "https://media2.giphy.com/media/bnzH3tEHjdDuU/giphy.gif",                          name: "Cat",    delay: 0   },
-  { gif: "https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif",                      name: "Pup",    delay: 0.3 },
-  { gif: "https://media.giphy.com/media/Wf9dyOrB0nGJn5FIYf/giphy.gif",                      name: "Bear",   delay: 0.6 },
-  { gif: "https://media.giphy.com/media/ICOgUNjpvO0PC/giphy.gif",                            name: "Bunny",  delay: 0.9 },
-  { gif: "https://media.giphy.com/media/VbEloWwOz3QqYBsqIZ/giphy.gif",                      name: "Hamster",delay: 0.2 },
-  { gif: "https://media.giphy.com/media/lJnAXeAmrqF3OPuCs0/giphy.gif",                      name: "Parrot", delay: 0.5 },
-  { gif: "https://media.giphy.com/media/26ufjzujCjKIjPt4A/giphy.gif",                       name: "Owl",    delay: 0.8 },
-  { gif: "https://media.giphy.com/media/RQSuZfuylVNAY/giphy.gif",                           name: "Cub",    delay: 0.1 },
+  { gif: "https://www.freepngimg.com/thumb/cat/36366-9-cat-transparent-image.png",           name: "Cat",    delay: 0   },
+  { gif: "https://www.freepngimg.com/thumb/dog/22940-3-dog-transparent-background.png",      name: "Dog",    delay: 0.3 },
+  { gif: "https://www.freepngimg.com/thumb/bear/27-bear-png-image-thumb.png",                name: "Bear",   delay: 0.6 },
+  { gif: "https://www.freepngimg.com/thumb/rabbit/10-rabbit-png-image.png",                  name: "Rabbit", delay: 0.9 },
+  { gif: "https://www.freepngimg.com/thumb/fox/30441-7-fox-transparent.png",                 name: "Fox",    delay: 0.2 },
+  { gif: "https://www.freepngimg.com/thumb/owl/32102-1-owl-transparent-background.png",      name: "Owl",    delay: 0.5 },
+  { gif: "https://www.freepngimg.com/thumb/deer/31671-2-deer-transparent-background.png",    name: "Deer",   delay: 0.8 },
+  { gif: "https://www.freepngimg.com/thumb/wolf/40989-4-wolf-transparent.png",               name: "Wolf",   delay: 0.1 },
 ];
 
 // Positions — subtle depth via size difference, but kept close so cats feel like same world
@@ -67,7 +67,7 @@ export default function AnimalOverlay({ participants = [] }) {
                   width: seat.size,
                   height: seat.size,
                   objectFit: "contain",
-                  filter: "drop-shadow(0 6px 18px rgba(0,0,0,0.45)) sepia(0.15) saturate(1.1)",
+                  filter: "drop-shadow(0 6px 18px rgba(0,0,0,0.5))",
                 }}
                 onError={(e) => { e.target.src = ANIMALS[0].gif; }}
               />
